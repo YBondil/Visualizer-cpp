@@ -1,23 +1,19 @@
-CXX      = g++
-TARGET   = visualizer
-CXXFLAGS = -Wall -Wextra -std=c++17 -Iinclude -O3 -march=native -ffast-math
-SRC_DIR  = src
-OBJ_DIR  = obj
-INC_DIR  = lib/include
 
+BUILD_DIR = build
 
-SRCS = $(wildcard $(SRC_DIR)/*.cpp)
-OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
-all: $(TARGET)
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^
+all: configure build
 
+configure:
+	@mkdir -p $(BUILD_DIR)
+	@cd $(BUILD_DIR) && cmake ..
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+build:
+	@cmake --build $(BUILD_DIR)
 
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
+run: build
+	@./$(BUILD_DIR)/visualizer
 
 clean:
-	rm -rf $(OBJ_DIR) $(TARGET) 
+	@rm -rf $(BUILD_DIR)
+
+.PHONY: all configure build run clean
