@@ -1,8 +1,10 @@
 #include "visualizer.h"
 #include <iostream>
+using namespace VISU ;
 
 Visualizer::Visualizer(){}
 Visualizer::~Visualizer(){}
+
 
 void Visualizer::init(const char* title, int width, int heigth, bool fullscreen){
     int flags = 0 ;

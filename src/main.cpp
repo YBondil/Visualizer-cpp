@@ -1,14 +1,14 @@
 #include "visualizer.h"
 
-
-
-Visualizer * visualizer ;
+VISU::Visualizer * visualizer ;
+VISU::Camera * camera ;
 
 int main(int argc, char **argv) {
 
-    visualizer = new Visualizer;
+    visualizer = new VISU::Visualizer;
     visualizer-> init("Visualizer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, false);
 
+    
 
     while (visualizer -> running()) {
 
