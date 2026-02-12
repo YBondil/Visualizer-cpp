@@ -1,16 +1,21 @@
 cmake_minimum_required(VERSION 3.16)
 project(visualizer)
 
-# set the output directory for built objects.
-# This makes sure that the dynamic library goes into the build directory automatically.
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 
-# This assumes the SDL source is available in vendored/SDL
+# 1. Automatically find all .cpp files in the src directory
+file(GLOB SOURCES "src/*.cpp")
+
+# 2. Automatically find all .hpp and .h files in the lib/include directory
+file(GLOB HEADERS "lib/include/*.hpp" "lib/include/*.h")
+
 add_subdirectory(lib/SDL EXCLUDE_FROM_ALL)
 
-# Create your game executable target as usual
-add_executable(visualizer src/main.cpp)
+# 3. Create the executable using the discovered source and header files
+add_executable(visualizer ${SOURCES} ${HEADERS})
 
-# Link to the actual SDL3 library.
+# 4. Ensure the compiler knows where to look for the headers during compilation
+target_include_directories(visualizer PRIVATE lib/include)
+
 target_link_libraries(visualizer PRIVATE SDL3::SDL3)
