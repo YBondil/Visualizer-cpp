@@ -1,0 +1,8 @@
+/Users/ybond/Info/c++/visualizer/build/CMakeFiles/visualizer.dir
+/Users/ybond/Info/c++/visualizer/build/CMakeFiles/edit_cache.dir
+/Users/ybond/Info/c++/visualizer/build/CMakeFiles/rebuild_cache.dir
+/Users/ybond/Info/c++/visualizer/build/lib/SDL/CMakeFiles/SDL3-shared.dir
+/Users/ybond/Info/c++/visualizer/build/lib/SDL/CMakeFiles/SDL3_test.dir
+/Users/ybond/Info/c++/visualizer/build/lib/SDL/CMakeFiles/SDL_uclibc.dir
+/Users/ybond/Info/c++/visualizer/build/lib/SDL/CMakeFiles/edit_cache.dir
+/Users/ybond/Info/c++/visualizer/build/lib/SDL/CMakeFiles/rebuild_cache.dir

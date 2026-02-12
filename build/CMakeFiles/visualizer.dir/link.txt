@@ -1,0 +1,1 @@
+/usr/bin/c++  -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/visualizer.dir/src/main.cpp.o -o visualizer  -Wl,-rpath,/Users/ybond/Info/c++/visualizer/build libSDL3.0.dylib

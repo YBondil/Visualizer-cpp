@@ -3,7 +3,7 @@ TARGET   = visualizer
 CXXFLAGS = -Wall -Wextra -std=c++17 -Iinclude -O3 -march=native -ffast-math
 SRC_DIR  = src
 OBJ_DIR  = obj
-INC_DIR  = include
+INC_DIR  = lib/include
 
 
 SRCS = $(wildcard $(SRC_DIR)/*.cpp)
