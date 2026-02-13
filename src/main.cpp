@@ -5,7 +5,7 @@ VISU::Visualizer * visualizer ;
 int main(int argc, char **argv) {
 
     visualizer = new VISU::Visualizer;
-    visualizer -> init("Visualizer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, false);
+    visualizer -> init("Visualizer", 600, 800, false);
 
     while (visualizer -> running()) {
 

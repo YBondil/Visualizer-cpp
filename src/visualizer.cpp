@@ -7,24 +7,33 @@ Visualizer::~Visualizer(){}
 
 
 void Visualizer::init(const char* title, int width, int heigth, bool fullscreen){
-    int flags = 0 ;
-    if(fullscreen){
-        flags = SDL_WINDOW_FULLSCREEN ;
+    int flags = 0;
+    if (fullscreen) {
+        flags = SDL_WINDOW_FULLSCREEN;
     }
-    if (SDL_Init(SDL_INIT_VIDEO) == 0){
-        window = SDL_CreateWindow(title, width, heigth, flags) ;
-        if (window){
-            std::cout << "Window initialized" << std::endl ; 
-        }
-        renderer = SDL_CreateRenderer(window, NULL) ;
-        if (renderer){
-            SDL_SetRenderDrawColor(renderer, 255,255,255,255) ;
-            std::cout << "Renderer initialized" << std::endl ;
-        }
-        is_running = true ;
-    } else {
-        is_running = false;
 
+    // SDL_Init retourne 0 en cas de succès, sinon une valeur négative (en SDL3)
+    if (SDL_Init(SDL_INIT_VIDEO)) { 
+        // Utilisez SDL_GetError() pour voir le message précis
+        std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl; 
+        is_running = false;
+        return;
+    }
+
+    window = SDL_CreateWindow(title, width, heigth, flags);
+    if (!window) {
+        std::cerr << "Window Error: " << SDL_GetError() << std::endl;
+        is_running = false;
+        return;
+    }
+
+    renderer = SDL_CreateRenderer(window, NULL);
+    if (!renderer) {
+        std::cerr << "Renderer Error: " << SDL_GetError() << std::endl;
+        is_running = false;
+    } else {
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        is_running = true;
     }
 
 }
