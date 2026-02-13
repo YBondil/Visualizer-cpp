@@ -7,10 +7,16 @@ Visualizer::~Visualizer(){}
 
 
 void Visualizer::init(const char* title, int width, int heigth, bool fullscreen){
-    int flags = 0;
+   
+    SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+    SDL_WindowFlags flags = SDL_WINDOW_HIGH_PIXEL_DENSITY;
+    
     if (fullscreen) {
-        flags = SDL_WINDOW_FULLSCREEN;
+        flags |= SDL_WINDOW_FULLSCREEN;
     }
+
     if (!SDL_Init(SDL_INIT_VIDEO)) { 
         std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl; 
         is_running = false;
@@ -29,6 +35,7 @@ void Visualizer::init(const char* title, int width, int heigth, bool fullscreen)
         std::cerr << "Renderer Error: " << SDL_GetError() << std::endl;
         is_running = false;
     } else {
+        SDL_SetRenderLogicalPresentation(renderer, width, heigth, SDL_LOGICAL_PRESENTATION_LETTERBOX);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         is_running = true;
     }
@@ -48,8 +55,8 @@ void Visualizer::handleEvent(){
 
 void Visualizer::update(){
     for (auto& object : objects){
-        object.rotate(0.02f, 400.f, 300.f);
-        object.rotate(0.02f);   
+        object.rotate(0.04f, 400.f, 300.f);
+        object.rotate(0.01f);   
     }
 }
 

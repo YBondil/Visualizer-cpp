@@ -118,11 +118,13 @@ void Object_2D::updateCenter(){
     float mid_y = 0 ;
 
     for (auto& segment : segments){
-        mid_x += (segment.get_x1() - segment.get_x2())/2 ;
-        mid_y += (segment.get_y1() - segment.get_y2())/2 ;
+        mid_x += (segment.get_x1() + segment.get_x2())/2 ;
+        mid_y += (segment.get_y1() + segment.get_y2())/2 ;
     }
+    if (!segments.empty()){
     center.x = mid_x / static_cast<float>(segments.size());
     center.y = mid_y / static_cast<float>(segments.size());
-}   
+    }
+}
 
 
