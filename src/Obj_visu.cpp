@@ -77,8 +77,8 @@ void Object_2D::rotate(float theta, float center_x, float center_y) {
         float x2 = seg.get_x2() - center_x; 
         float y2 = seg.get_y2() - center_y;
         
-        float x2_rot = x1 * std::cos(theta) - y1 * std::sin(theta); 
-        float y2_rot = x1 * std::sin(theta) + y1 * std::cos(theta);
+        float x2_rot = x2 * std::cos(theta) - y2 * std::sin(theta); 
+        float y2_rot = x2 * std::sin(theta) + y2 * std::cos(theta);
         
         float new_x2 = x2_rot + center_x; 
         float new_y2 = y2_rot + center_y;
@@ -91,6 +91,8 @@ void Object_2D::rotate(float theta) {
 }
 
 Triangle_2D::Triangle_2D(float x1,float y1,float x2,float y2,float x3,float y3){
+    center.x = (p1.getPosition().x + p2.getPosition().x +p3.getPosition().x)/3 ;
+    center.y = (p1.getPosition().y + p2.getPosition().y +p3.getPosition().y)/3 ;
     Segment s1(x1,y1,x2,y2);
     Segment s2(x2,y2,x3,y3 );
     Segment s3(x1,y1,x3,y3);

@@ -62,10 +62,11 @@ namespace OBJ_VISU {
 
 
     class Object_2D {
+        friend class Triangle_2D ;
         private :
             std::vector<Segment> segments ;
             Point center ;
-            
+
         public :
             Object_2D(){};
             ~Object_2D(){};
@@ -82,13 +83,9 @@ namespace OBJ_VISU {
             Point p1 ;
             Point p2 ;
             Point p3 ;
-            Point center = Point(
-                (p1.getPosition().x + p2.getPosition().x +p3.getPosition().x)/3 ,
-                (p1.getPosition().y + p2.getPosition().y +p3.getPosition().y)/3) ;
 
         public :
             Triangle_2D(float x1,float y1,float x2,float y2,float x3,float y3);
             ~Triangle_2D(){};
-            void rotate(float theta);
     };
 }
