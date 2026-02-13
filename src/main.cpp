@@ -5,20 +5,36 @@
 
 VISU::Visualizer* visualizer;
 
+
 int main(int argc, char **argv) {
 
-    visualizer = new VISU::Visualizer;
-    visualizer->init("Visualizer", 800, 600, false); 
-
-    OBJ_VISU::Segment segm1(100.0f,100.0f,300.0f,500.0f, WHITE);
+    OBJ_VISU::Triangle_2D triangle(100.f,100.f,100.f,200.f,200.f,200.f) ;
 
     
-    visualizer->add_segment(segm1);
+    visualizer = new VISU::Visualizer;
+
+
+    const int FPS = 60;
+    const int frameDelay = 1000/FPS;
+
+    Uint32 frameStart;
+    int frameTime ;
+
+    visualizer->init("Visualizer", 800, 600, false); 
+    visualizer->add_object(triangle);
+
 
     while (visualizer->running()) {
+        frameStart = SDL_GetTicks();
+
         visualizer->handleEvent();
         visualizer->update();
         visualizer->render(SHOWPOINTS);
+
+        frameTime = SDL_GetTicks() - frameStart;
+        if(frameDelay > frameTime){
+            SDL_Delay(frameDelay - frameTime);
+        }
     }
 
     visualizer->clean();

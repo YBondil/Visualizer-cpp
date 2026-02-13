@@ -1,4 +1,5 @@
 #include "maths.h"
+#include <cmath>
 using namespace MATHS ;
 
 
@@ -156,6 +157,15 @@ Matrix<int> Matrix<T>::operator* (const N3& vec) const {
         res.z = sum_z ; 
     }
     return res;
+}
+
+Matrix<float> rotation_2(float theta) {
+    Matrix<float> res (2,2);
+    res.data[0][0] = std::cos(theta) ;
+    res.data[1][1] = std::cos(theta) ;
+    res.data[0][1] = - std::sin(theta) ;
+    res.data[1][0] = std::cos(theta) ;
+    return res ;
 }
 
 

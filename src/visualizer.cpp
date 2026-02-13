@@ -47,15 +47,17 @@ void Visualizer::handleEvent(){
 }
 
 void Visualizer::update(){
-
+    for (auto& object : objects){
+        object.rotate(2);
+    }
 }
 
 void Visualizer::render(bool ShowPoints = false){
     SDL_SetRenderDrawColor(renderer, 0,0,0,255);
     SDL_RenderClear(renderer);
     
-    for (auto& segment : segments){
-        segment.render(renderer, ShowPoints);
+    for (auto& object : this -> objects){
+        object.render(renderer, ShowPoints);
     }
     SDL_RenderPresent(renderer);
 }
@@ -66,6 +68,6 @@ void Visualizer::clean(){
     SDL_Quit();
 }
 
-void Visualizer::add_segment(OBJ_VISU::Segment& segment){
-    segments.push_back(segment);
+void Visualizer::add_object(OBJ_VISU::Object_2D& object){
+    objects.push_back(object);
 }

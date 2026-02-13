@@ -1,7 +1,6 @@
 #pragma once 
 #include <SDL3/SDL.h>
 #include <vector>
-#include "maths.h"
 #include "Obj_visu.h"
 
 namespace VISU{
@@ -18,13 +17,13 @@ namespace VISU{
             void render(bool ShowPoints);
             void clean();
             bool running(){return is_running;};
-            void add_segment(OBJ_VISU::Segment& segment);
+            void add_object(OBJ_VISU::Object_2D& object);
 
         private :
             bool is_running ;
             SDL_Window * window ;
             SDL_Renderer* renderer ;
-            std::vector<OBJ_VISU::Segment> segments;
+            std::vector<OBJ_VISU::Object_2D> objects;
 
     };
 
