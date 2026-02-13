@@ -28,11 +28,6 @@ namespace MATHS {
             Matrix<T> operator*  (const Matrix<T>&  other) const ;
             Matrix<T> operator* (T lambda) ;
             Matrix<int> operator* (const N3& vec) const ;
-
-            
-            
-            
-
     };
 }
 
