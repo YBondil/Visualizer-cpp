@@ -13,7 +13,7 @@ void Visualizer::init(const char* title, int width, int heigth, bool fullscreen)
     }
 
     // SDL_Init retourne 0 en cas de succès, sinon une valeur négative (en SDL3)
-    if (SDL_Init(SDL_INIT_VIDEO)) { 
+    if (!SDL_Init(SDL_INIT_VIDEO)) { 
         // Utilisez SDL_GetError() pour voir le message précis
         std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl; 
         is_running = false;
@@ -32,7 +32,7 @@ void Visualizer::init(const char* title, int width, int heigth, bool fullscreen)
         std::cerr << "Renderer Error: " << SDL_GetError() << std::endl;
         is_running = false;
     } else {
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         is_running = true;
     }
 
@@ -56,6 +56,9 @@ void Visualizer::update(){
 
 void Visualizer::render(){
     SDL_RenderClear(renderer);
+    for (auto object : objects){
+        object.render(renderer);
+    }
     SDL_RenderPresent(renderer);
 }
 
@@ -63,4 +66,8 @@ void Visualizer::clean(){
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
+}
+
+void Visualizer::add_object(Object& object){
+    objects.push_back(object);
 }

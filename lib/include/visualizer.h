@@ -1,8 +1,30 @@
 #pragma once 
 #include <SDL3/SDL.h>
+#include <vector>
 #include "maths.h"
 
 namespace VISU{
+
+    class Object{
+        private :
+            int x ;
+            int y ;
+            SDL_FPoint segment;
+
+        public :
+            Object(){} ;
+            Object(int x, int y){x = x; y = y ; segment.x = x; segment.y = y ;};
+            ~Object(){};
+
+            void render(SDL_Renderer* ren){
+                SDL_SetRenderDrawColor(ren, 255,255,255,255);
+                SDL_RenderLines(ren,&segment,1);
+                SDL_SetRenderDrawColor(ren, 0,0,0,255);};
+                
+
+            void init(int x, int y){x = x; y = y ; segment.x = x; segment.y = y ;};
+    };
+
     class Visualizer {
 
         public :
@@ -15,19 +37,18 @@ namespace VISU{
             void render();
             void clean();
             bool running(){return is_running;};
+            void add_object(Object& object);
 
         private :
             bool is_running ;
             SDL_Window * window ;
             SDL_Renderer* renderer ;
+            std::vector<Object> objects;
 
 
     };
 
-    class Object{
-
-    };
-
+    
     class Camera {
         private :
 
