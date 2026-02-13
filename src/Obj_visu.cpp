@@ -84,22 +84,45 @@ void Object_2D::rotate(float theta, float center_x, float center_y) {
         float new_y2 = y2_rot + center_y;
         seg.set(new_x1, new_y1, new_x2, new_y2);
     }
+    this -> updateCenter();
 }
 
 void Object_2D::rotate(float theta) {
-    this->Object_2D::rotate(theta, center.x, center.y);
+    this -> Object_2D::rotate(theta, center.x, center.y);
 }
 
-Triangle_2D::Triangle_2D(float x1,float y1,float x2,float y2,float x3,float y3){
-    center.x = (p1.getPosition().x + p2.getPosition().x +p3.getPosition().x)/3 ;
-    center.y = (p1.getPosition().y + p2.getPosition().y +p3.getPosition().y)/3 ;
-    Segment s1(x1,y1,x2,y2);
-    Segment s2(x2,y2,x3,y3 );
-    Segment s3(x1,y1,x3,y3);
-    this -> add_segment(s1);
-    this -> add_segment(s2);
-    this -> add_segment(s3);
-}
+Triangle_2D::Triangle_2D(float x1, float y1, float x2, float y2, float x3, float y3) {
+    float cx = (x1 + x2 + x3) / 3.0f;
+    float cy = (y1 + y2 + y3) / 3.0f;
+    
+    center.setPosition(cx, cy);
 
+    Segment s1(x1, y1, x2, y2);
+    Segment s2(x2, y2, x3, y3);
+    Segment s3(x1, y1, x3, y3);
+    
+    this->add_segment(s1);
+    this->add_segment(s2);
+    this->add_segment(s3);
+
+    p1.x = x1 ;
+    p1.y = y1 ;
+    p2.x = x2 ;
+    p2.y = y2 ;
+    p3.x = x3 ;
+    p3.y = y3 ;
+}   
+
+void Object_2D::updateCenter(){
+    float mid_x = 0 ;
+    float mid_y = 0 ;
+
+    for (auto& segment : segments){
+        mid_x += (segment.get_x1() - segment.get_x2())/2 ;
+        mid_y += (segment.get_y1() - segment.get_y2())/2 ;
+    }
+    center.x = mid_x / static_cast<float>(segments.size());
+    center.y = mid_y / static_cast<float>(segments.size());
+}   
 
 

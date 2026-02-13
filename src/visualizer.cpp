@@ -48,7 +48,8 @@ void Visualizer::handleEvent(){
 
 void Visualizer::update(){
     for (auto& object : objects){
-        object.rotate(0.2f);
+        object.rotate(0.02f, 400.f, 300.f);
+        object.rotate(0.02f);   
     }
 }
 
@@ -58,6 +59,12 @@ void Visualizer::render(bool ShowPoints = false){
     
     for (auto& object : this -> objects){
         object.render(renderer, ShowPoints);
+    }
+    for (auto& segment : this -> segments){
+        segment.render(renderer, ShowPoints);
+    }
+    for (auto& point : this -> points){
+        point.render(renderer);
     }
     SDL_RenderPresent(renderer);
 }
@@ -70,4 +77,10 @@ void Visualizer::clean(){
 
 void Visualizer::add_object(OBJ_VISU::Object_2D& object){
     objects.push_back(object);
+}
+void Visualizer::add_segment(OBJ_VISU::Segment& segment){
+    segments.push_back(segment);
+}
+void Visualizer::add_point(OBJ_VISU::Point& point){
+    points.push_back(point);
 }

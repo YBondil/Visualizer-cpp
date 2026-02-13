@@ -75,11 +75,13 @@ namespace OBJ_VISU {
             void add_segment(Segment& segment) ;
             void rotate(float theta, float center_x, float center_y);
             void rotate(float theta);
+            void updateCenter();
 
     };
 
     class Triangle_2D : public Object_2D {
         private :
+
             Point p1 ;
             Point p2 ;
             Point p3 ;
@@ -87,5 +89,7 @@ namespace OBJ_VISU {
         public :
             Triangle_2D(float x1,float y1,float x2,float y2,float x3,float y3);
             ~Triangle_2D(){};
+
+            
     };
 }

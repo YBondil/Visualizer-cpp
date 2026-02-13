@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
 
     
     visualizer = new VISU::Visualizer;
-
+    OBJ_VISU::Point p(400,300) ;
 
     const int FPS = 60;
     const int frameDelay = 1000/FPS;
@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
 
     visualizer->init("Visualizer", 800, 600, false); 
     visualizer->add_object(triangle);
+    visualizer->add_point(p);
 
 
     while (visualizer->running()) {
