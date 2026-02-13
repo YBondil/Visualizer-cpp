@@ -48,7 +48,7 @@ void Visualizer::handleEvent(){
 
 void Visualizer::update(){
     for (auto& object : objects){
-        object.rotate(2);
+        object.rotate(0.2f);
     }
 }
 

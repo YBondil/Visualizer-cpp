@@ -63,17 +63,31 @@ void Object_2D::render(SDL_Renderer* ren, bool ShowPoints){
         segment.render(ren,ShowPoints);
     }
 }
-
-void Object_2D::rotate(float theta){
-    for (auto& seg : this -> segments){
-        float x1_bis = seg.get_x1()*std::cos(theta) - seg.get_y1()*std::sin(theta);
-        float y1_bis = seg.get_x1()*std::sin(theta) + seg.get_y1()*std::cos(theta);
-
-        float x2_bis = seg.get_x1()*std::cos(theta) - seg.get_y1()*std::sin(theta);
-        float y2_bis = seg.get_x1()*std::sin(theta) + seg.get_y1()*std::cos(theta);
+void Object_2D::rotate(float theta, float center_x, float center_y) {
+    for (auto& seg : this->segments) {
+        float x1 = seg.get_x1() - center_x;
+        float y1 = seg.get_y1() - center_y;
         
-        seg.set(x1_bis,y1_bis,x2_bis, y2_bis) ;
+        float x1_rot = x1 * std::cos(theta) - y1 * std::sin(theta); 
+        float y1_rot = x1 * std::sin(theta) + y1 * std::cos(theta);
+        
+        float new_x1 = x1_rot + center_x; 
+        float new_y1 = y1_rot + center_y;
+        
+        float x2 = seg.get_x2() - center_x; 
+        float y2 = seg.get_y2() - center_y;
+        
+        float x2_rot = x1 * std::cos(theta) - y1 * std::sin(theta); 
+        float y2_rot = x1 * std::sin(theta) + y1 * std::cos(theta);
+        
+        float new_x2 = x2_rot + center_x; 
+        float new_y2 = y2_rot + center_y;
+        seg.set(new_x1, new_y1, new_x2, new_y2);
     }
+}
+
+void Object_2D::rotate(float theta) {
+    this->Object_2D::rotate(theta, center.x, center.y);
 }
 
 Triangle_2D::Triangle_2D(float x1,float y1,float x2,float y2,float x3,float y3){
@@ -84,4 +98,6 @@ Triangle_2D::Triangle_2D(float x1,float y1,float x2,float y2,float x3,float y3){
     this -> add_segment(s2);
     this -> add_segment(s3);
 }
+
+
 
