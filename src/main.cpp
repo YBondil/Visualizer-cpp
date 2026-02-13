@@ -1,31 +1,27 @@
+
 #include "visualizer.h"
+#define WHITE {255,255,255,255}
 
-VISU::Visualizer * visualizer ;
-int heigth = 500 ;
-int width = 500 ;
-bool fullscreen = false ;
+VISU::Visualizer* visualizer;
 
-VISU::Object* ligne;
 int main(int argc, char **argv) {
 
     visualizer = new VISU::Visualizer;
-    ligne = new VISU::Object ;
+    visualizer->init("Visualizer", 800, 600, false); // Taille corrigée (largeur, hauteur)
 
-    ligne -> init(50,50);
+    VISU::Segment segm1(100.0f,100.0f,300.0f,500.0f, WHITE );
 
-    visualizer -> init("Visualizer", heigth, width, fullscreen);
-    visualizer -> add_object(*ligne) ;
+    
+    visualizer->add_segment(segm1);
 
-    while (visualizer -> running()) {
-
-        visualizer -> handleEvent();
-        visualizer -> update() ;
-        visualizer -> render() ;
-
+    while (visualizer->running()) {
+        visualizer->handleEvent();
+        visualizer->update();
+        visualizer->render();
     }
 
-    visualizer -> clean() ;
-
-    delete visualizer ;
+    visualizer->clean();
+    delete visualizer;
+    
     return 0;
 }
