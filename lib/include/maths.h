@@ -75,6 +75,6 @@ class Cube : public Shape {
             vertices = apex; // In a cube, vertices are the same as apexes } 
         }
         ~Cube(){}; 
-        void rotate(Matrix<int>& rotation_matrix) ;
+        void rotate(MATHS::Matrix<int>& rotation_matrix) ;
 
 };

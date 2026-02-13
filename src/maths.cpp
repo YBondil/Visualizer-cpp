@@ -4,7 +4,7 @@ using namespace MATHS ;
 
 template <typename T>
 Matrix<T>::Matrix(int rows, int cols){
-    for (int i = 0 ; i< rows, i++){
+    for (int i = 0 ; i< rows; i++){
         for (int j = 0; j < cols ; j++){
             data[i][j] = 0 ; 
         }
@@ -118,7 +118,7 @@ Matrix<T> Matrix<T>::operator*  (const Matrix<T>& other) const {
             for(int j = 0; j < other.cols; ++j) {
                 sum += data[i][k] * other.data[k][j];
             }
-            result.data[i][j] = sum;
+            result.data[i][k] = sum;
         }
     }
 
@@ -138,7 +138,7 @@ Matrix<int> Matrix<T>::operator* (const N3& vec) const {
     if (cols != 3){ 
         throw std::invalid_argument("Incompatible matrix dimensions") ; 
     } 
-    Matrix<int> result(rows, 1) ;
+    MATHS::N3 res ;
     for (int i = 0; i < rows; ++i) {
 
         int sum_x(0); 
@@ -151,11 +151,11 @@ Matrix<int> Matrix<T>::operator* (const N3& vec) const {
            sum_z += data[i][j] * vec.z; 
         }
 
-        result.data[i][0].x = sum_x ; 
-        result.data[i][0].y = sum_y ; 
-        result.data[i][0].z = sum_z ; 
+        res.x = sum_x ; 
+        res.y = sum_y ; 
+        res.z = sum_z ; 
     }
-    return result;
+    return res;
 }
 
 

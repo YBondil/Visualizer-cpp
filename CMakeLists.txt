@@ -8,7 +8,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 file(GLOB SOURCES "src/*.cpp")
 
 # 2. Automatically find all .hpp and .h files in the lib/include directory
-file(GLOB HEADERS "lib/include/*.hpp" "lib/include/*.h")
+file(GLOB HEADERS "lib/include/*.h")
 
 add_subdirectory(lib/SDL EXCLUDE_FROM_ALL)
 

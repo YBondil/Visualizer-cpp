@@ -1,5 +1,5 @@
-#include "visualizer.h"
 #include <iostream>
+#include "visualizer.h"
 using namespace VISU ;
 
 Visualizer::Visualizer(){}
@@ -47,7 +47,6 @@ void Visualizer::update(){
 
 void Visualizer::render(){
     SDL_RenderClear(renderer);
-
     SDL_RenderPresent(renderer);
 }
 
