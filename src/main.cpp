@@ -1,31 +1,30 @@
 #include "visualizer.h"
 #include "Obj_visu.h"
-#define WHITE {255,255,255,255}
+#define WHITE {255, 255, 255, 255}
 #define SHOWPOINTS false
 
-VISU::Visualizer* visualizer;
+VISU::Visualizer *visualizer;
 
+int main(int argc, char **argv)
+{
 
-int main(int argc, char **argv) {
+    OBJ_VISU::Triangle_2D triangle(100.f, 100.f, 100.f, 200.f, 200.f, 200.f);
 
-    OBJ_VISU::Triangle_2D triangle(100.f,100.f,100.f,200.f,200.f,200.f) ;
-
-    
     visualizer = new VISU::Visualizer;
-    OBJ_VISU::Point p(400,300) ;
+    OBJ_VISU::Point p(400, 300);
 
     const int FPS = 60;
-    const int frameDelay = 1000/FPS;
+    const int frameDelay = 1000 / FPS;
 
     Uint32 frameStart;
-    int frameTime ;
+    int frameTime;
 
-    visualizer->init("Visualizer", 800, 600, false); 
+    visualizer->init("Visualizer", 800, 600, false);
     visualizer->add_object(triangle);
     visualizer->add_point(p);
 
-
-    while (visualizer->running()) {
+    while (visualizer->running())
+    {
         frameStart = SDL_GetTicks();
 
         visualizer->handleEvent();
@@ -33,13 +32,14 @@ int main(int argc, char **argv) {
         visualizer->render(SHOWPOINTS);
 
         frameTime = SDL_GetTicks() - frameStart;
-        if(frameDelay > frameTime){
+        if (frameDelay > frameTime)
+        {
             SDL_Delay(frameDelay - frameTime);
         }
     }
 
     visualizer->clean();
     delete visualizer;
-    
+
     return 0;
 }
