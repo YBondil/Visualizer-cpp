@@ -3,6 +3,7 @@
 #define WHITE {255, 255, 255, 255}
 #define SHOWPOINTS false
 
+
 VISU::Visualizer *visualizer;
 
 int main(int argc, char **argv)
@@ -11,7 +12,8 @@ int main(int argc, char **argv)
     OBJ_VISU::Triangle_2D triangle(100.f, 100.f, 100.f, 200.f, 200.f, 200.f);
 
     visualizer = new VISU::Visualizer;
-    OBJ_VISU::Point p(400, 300);
+
+    OBJ_VISU::Point p(OBJ_VISU::Float3(400.0f, 300.0f, 0.0f));
 
     const int FPS = 60;
     const int frameDelay = 1000 / FPS;
@@ -20,6 +22,7 @@ int main(int argc, char **argv)
     int frameTime;
 
     visualizer->init("Visualizer", 800, 600, false);
+    
     visualizer->add_object(triangle);
     visualizer->add_point(p);
 
@@ -28,7 +31,7 @@ int main(int argc, char **argv)
         frameStart = SDL_GetTicks();
 
         visualizer->handleEvent();
-        visualizer->update();
+        visualizer->update(); 
         visualizer->render(SHOWPOINTS);
 
         frameTime = SDL_GetTicks() - frameStart;
