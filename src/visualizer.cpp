@@ -46,6 +46,7 @@ void Visualizer::init(const char *title, int width, int heigth, bool fullscreen)
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         is_running = true;
         camera = new Camera(90.0f, (float)width, (float)heigth);
+        camera->move(OBJ_VISU::Float3(0, 0, -400.0f));
     }
 }
 
@@ -63,12 +64,16 @@ void Visualizer::handleEvent()
     }
 }
 
-void Visualizer::update()
+void Visualizer::update(int count)
 {
+
     for (auto object : objects)
     {
-        if (object) {
-            object->rotate(0.01f, 0.01f, 0.01f);
+        if (object && (count%200)) {
+            object->rotate(0.01f, 0.05f, 0.01f);
+        }
+        else if (object && (count%400)) {
+            object->rotate(0.05f, 0.01f, 0.01f);
         }
     }
 

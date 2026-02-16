@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cmath>
 #include <iostream>
+#include <algorithm>
 #include "camera.h"
 
 using namespace OBJ_VISU;
@@ -10,6 +11,36 @@ void Point::project(Camera* cam) {
     if (cam) {
         cam->calculatePositionOnScreen(*this);
     }
+}
+void Point::rotate(float theta_x, float theta_y, float theta_z, Float3 center)
+{
+    float cx = center.x;
+    float cy = center.y;
+    float cz = center.z;
+
+    float x = coords.x - cx;
+    float y = coords.y - cy;
+    float z = coords.z - cz;
+
+    if (theta_z != 0) {
+        float old_x = x;
+        x = x * cos(theta_z) - y * sin(theta_z);
+        y = old_x * sin(theta_z) + y * cos(theta_z);
+    }
+
+    if (theta_y != 0) {
+        float old_x = x;
+        x = x * cos(theta_y) + z * sin(theta_y);
+        z = -old_x * sin(theta_y) + z * cos(theta_y);
+    }
+
+    if (theta_x != 0) {
+        float old_y = y;
+        y = y * cos(theta_x) - z * sin(theta_x);
+        z = old_y * sin(theta_x) + z * cos(theta_x);
+    }
+
+    this->coords = Float3(x + cx, y + cy, z + cz);
 }
 
 Segment::Segment(Float3 pos1, Float3 pos2, SDL_Color col) : owns_points(true)
@@ -179,6 +210,8 @@ Triangle_2D::Triangle_2D(float x1, float y1, float x2, float y2, float x3, float
     this->updateCenter();
 }
 
+
+
 void Object_3D::add_segment(Segment& segment)
 {
     this->segments.push_back(segment);
@@ -187,6 +220,16 @@ void Object_3D::add_segment(Segment& segment)
 
 void Object_3D::render(SDL_Renderer* ren, bool ShowPoints)
 {
+    
+    std::sort(faces.begin(), faces.end(), [](const Face& a, const Face& b) {
+        return a.getDepth() < b.getDepth(); 
+    });
+    for (auto& face : this->faces)
+    {
+        face.render(ren, ShowPoints);
+    }
+
+    
     for (auto& segment : this->segments)
     {
         segment.render(ren, ShowPoints);
@@ -195,49 +238,11 @@ void Object_3D::render(SDL_Renderer* ren, bool ShowPoints)
 
 void Object_3D::rotate(float theta_x, float theta_y, float theta_z)
 {
-    float cx = center.x;
-    float cy = center.y;
-    float cz = center.z;
-
-    for (auto& seg : this->segments)
+    for (auto* p : this->vertices)
     {
-        Point* points[] = { seg.getP1(), seg.getP2() };
-
-        for (auto* p : points) {
-            // Note: Si les points sont partagés entre plusieurs segments,
-            // cette approche naïve va faire tourner le même point plusieurs fois par frame.
-            // Pour l'instant, cela fonctionne car tes segments 3D actuels ne partagent pas d'instance de Point.
-            
-            float x = p->getPosition().x - cx;
-            float y = p->getPosition().y - cy;
-            float z = p->getPosition().z - cz;
-            
-            // Rotation Z
-            if (theta_z != 0) {
-                float old_x = x; 
-                x = x * cos(theta_z) - y * sin(theta_z);
-                y = old_x * sin(theta_z) + y * cos(theta_z);
-            }
-
-            // Rotation Y
-            if (theta_y != 0) {
-                float old_x = x;
-                x = x * cos(theta_y) + z * sin(theta_y);
-                z = -old_x * sin(theta_y) + z * cos(theta_y);
-            }
-            
-            // Rotation X
-            if (theta_x != 0) {
-                float old_y = y;
-                y = y * cos(theta_x) - z * sin(theta_x);
-                z = old_y * sin(theta_x) + z * cos(theta_x);
-            }
-
-            p->init(Float3(x + cx, y + cy, z + cz));
-        }
+        p->rotate(theta_x, theta_y, theta_z, this->center);
     }
 }
-
 void Object_3D::updateCenter()
 {
     float mid_x = 0;
@@ -258,9 +263,42 @@ void Object_3D::updateCenter()
     center.z = mid_z / static_cast<float>(segments.size());
 }
 
+
 void Object_3D::project(Camera* cam) {
+    for (auto& face : this->faces) {
+        face.project(cam);
+    }
     for (auto& segment : this->segments) {
         if (segment.getP1()) segment.getP1()->project(cam);
         if (segment.getP2()) segment.getP2()->project(cam);
     }
+}
+
+void Object_3D::add_face(Face face) {
+    this->faces.push_back(face);
+}
+
+void Face::render(SDL_Renderer* ren, bool ShowPoints)
+{
+    SDL_Vertex vertices[3];
+
+    vertices[0].position = { p1->positionOnScreen.x, p1->positionOnScreen.y };
+    vertices[0].color = { (float)color.r/255.0f, (float)color.g/255.0f, (float)color.b/255.0f, (float)color.a/255.0f };
+    vertices[0].tex_coord = { 0.0f, 0.0f };
+
+    vertices[1].position = { p2->positionOnScreen.x, p2->positionOnScreen.y };
+    vertices[1].color = { (float)color.r/255.0f, (float)color.g/255.0f, (float)color.b/255.0f, (float)color.a/255.0f };
+    vertices[1].tex_coord = { 0.0f, 0.0f };
+
+    vertices[2].position = { p3->positionOnScreen.x, p3->positionOnScreen.y };
+    vertices[2].color = { (float)color.r/255.0f, (float)color.g/255.0f, (float)color.b/255.0f, (float)color.a/255.0f };
+    vertices[2].tex_coord = { 0.0f, 0.0f };
+
+    SDL_RenderGeometry(ren, nullptr, vertices, 3, nullptr, 0);
+}
+void Face::rotate(float theta_x, float theta_y, float theta_z, Float3 center)
+{
+    if(p1) p1->rotate(theta_x, theta_y, theta_z, center);
+    if(p2) p2->rotate(theta_x, theta_y, theta_z, center);
+    if(p3) p3->rotate(theta_x, theta_y, theta_z, center);
 }

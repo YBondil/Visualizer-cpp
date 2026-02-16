@@ -15,7 +15,7 @@ namespace VISU
 
         void init(const char *title, int width, int heigth, bool fullscreen);
         void handleEvent();
-        void update();
+        void update(int count);
         void render(bool ShowPoints);
         void clean();
         bool running() { return is_running; };

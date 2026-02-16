@@ -36,6 +36,7 @@ namespace OBJ_VISU {
         friend class Object_2D;
         friend class Triangle_2D;
         friend class Object_3D;
+        friend class Face;
 
     private:
         Float3 coords;
@@ -67,6 +68,7 @@ namespace OBJ_VISU {
             positionOnScreen.y = y;
         }
         virtual void project(Camera* cam) override;
+        void rotate(float theta_x, float theta_y, float theta_z, Float3 center);
     };
 
     class Segment : public Object 
@@ -125,11 +127,40 @@ namespace OBJ_VISU {
         Triangle_2D(float x1, float y1, float x2, float y2, float x3, float y3);
         ~Triangle_2D() {}
     };
+    class Face : public Object 
+    {
+    private:
+        Point* p1;
+        Point* p2;
+        Point* p3;
+        SDL_Color color;
+
+    public:
+        Face(Point* ptr1, Point* ptr2, Point* ptr3, SDL_Color col) 
+            : p1(ptr1), p2(ptr2), p3(ptr3), color(col) {}
+        
+        virtual ~Face() {}
+
+        float getDepth() const {
+            return (p1->getPosition().z + p2->getPosition().z + p3->getPosition().z) / 3.0f;
+        }
+
+        virtual void project(Camera* cam) override {
+            p1->project(cam);
+            p2->project(cam);
+            p3->project(cam);
+        }
+
+        virtual void render(SDL_Renderer* ren, bool ShowPoints) override;
+        void rotate(float theta_x, float theta_y, float theta_z, Float3 center);
+    };
 
     class Object_3D : public Object
     {
     private:
         std::vector<Segment> segments;
+        std::vector<Face> faces;
+        std::vector<Point*> vertices; 
         Float3 center;
 
     public:
@@ -138,19 +169,14 @@ namespace OBJ_VISU {
 
         virtual void render(SDL_Renderer* ren, bool ShowPoints) override;
         void add_segment(Segment& segment);
+        void add_face(Face face);
+        void add_point(Point* p) { vertices.push_back(p); }
         
         virtual void rotate(float theta_x, float theta_y, float theta_z) override;
         
         void updateCenter();
         virtual void project(Camera* cam) override;
-    };
 
-    class Triangle_3D : public Object_3D
-    {
-    private :
-        Float3 p1_coords, p2_coords, p3_coords ;
-    public:
-        Triangle_3D();
-        ~Triangle_3D() {} ;
+        
     };
 }
