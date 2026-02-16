@@ -60,11 +60,6 @@ int main(int argc, char **argv)
         visualizer->handleEvent();
         
         visualizer->update(); 
-        
-        for(auto* p : vertices) {
-
-            p->setPositionOnScreen(p->getPosition().x, p->getPosition().y);
-        }
 
         visualizer->render(false); 
 

@@ -93,6 +93,7 @@ namespace OBJ_VISU {
         
         Point* getP1() { return p1; };
         Point* getP2() { return p2; };
+        
 
     };
 

@@ -84,8 +84,11 @@ void Segment::set(Float3 pos1, Float3 pos2)
     this->p1->init(pos1);
     this->p2->init(pos2);
 }
-
-
+void Segment::project(Camera* cam)
+{
+    if (p1) p1->project(cam);
+    if (p2) p2->project(cam);
+}
 void Object_2D::add_segment(Segment& segment)
 {
     this->segments.push_back(segment);
