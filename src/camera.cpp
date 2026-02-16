@@ -30,14 +30,14 @@ void Camera::calculatePositionOnScreen(OBJ_VISU::Point& point){
         return ;
     }
     float f = 1.0f / tan(fov / 2.0f);
-    float ratio = screenWidth / screenHeight;
+    float ratio = screenWidth / screenHeigth;
 
     // normalisation
     float xp = (x * f) / (ratio * z);
     float yp = (y * f) / z; 
 
     float final_x = (xp + 1.0f) * (screenWidth / 2.0f);
-    float final_y = (1.0f - yp) * (screenHeight / 2.0f);
+    float final_y = (1.0f - yp) * (screenHeigth / 2.0f);
 
     point.setPositionOnScreen(final_x, final_y);
     return ;

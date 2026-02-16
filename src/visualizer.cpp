@@ -1,9 +1,10 @@
 #include <iostream>
 #include "visualizer.h"
+#include "camera.h"
 using namespace VISU;
 
-Visualizer::Visualizer() {}
-Visualizer::~Visualizer() {}
+Visualizer::Visualizer() : window(nullptr), renderer(nullptr), camera(nullptr), is_running(false) {}
+Visualizer::~Visualizer() {delete camera;}
 
 void Visualizer::init(const char *title, int width, int heigth, bool fullscreen)
 {
@@ -44,6 +45,7 @@ void Visualizer::init(const char *title, int width, int heigth, bool fullscreen)
         SDL_SetRenderLogicalPresentation(renderer, width, heigth, SDL_LOGICAL_PRESENTATION_LETTERBOX);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         is_running = true;
+        camera = new Camera(90.0f, (float)width, (float)heigth);
     }
 }
 
@@ -65,7 +67,18 @@ void Visualizer::update()
 {
     for (auto object : objects)
     {
-        object->rotate(0.04f, 400.f, 300.f);
+        if (object) {
+            object->rotate(0.01f, 0.01f, 0.01f);
+        }
+    }
+
+    if (camera) {
+        for (auto object : objects)
+        {
+            if (object) {
+                object->project(camera);
+            }
+        }
     }
 }
 

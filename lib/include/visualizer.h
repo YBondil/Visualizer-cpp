@@ -19,17 +19,14 @@ namespace VISU
         void render(bool ShowPoints);
         void clean();
         bool running() { return is_running; };
-        void add_object(OBJ_VISU::Object_2D &object);
-        void add_segment(OBJ_VISU::Segment &segment);
-        void add_point(OBJ_VISU::Point &point);
+        void add_object(OBJ_VISU::Object* object);
 
     private:
         bool is_running;
+        Camera* camera;
         SDL_Window *window;
         SDL_Renderer *renderer;
-        std::vector<OBJ_VISU::Object_2D> objects;
-        std::vector<OBJ_VISU::Point> points;
-        std::vector<OBJ_VISU::Segment> segments;
+        std::vector<OBJ_VISU::Object*> objects;
     };
 
     

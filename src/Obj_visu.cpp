@@ -2,8 +2,15 @@
 #include <fstream>
 #include <cmath>
 #include <iostream>
+#include "camera.h"
 
 using namespace OBJ_VISU;
+
+void Point::project(Camera* cam) {
+    if (cam) {
+        cam->calculatePositionOnScreen(*this);
+    }
+}
 
 Segment::Segment(Float3 pos1, Float3 pos2, SDL_Color col) : owns_points(true)
 {
@@ -92,9 +99,9 @@ void Object_2D::render(SDL_Renderer* ren, bool ShowPoints)
         segment.render(ren, ShowPoints);
     }
 }
-void Object_2D::rotate(float theta_x, float theta_y, float theta_z) {
-        this->rotate(theta_z);
-    }
+//void Object_2D::rotate(float theta_x, float theta_y, float theta_z) {
+//        this->rotate(theta_z);
+//    }
 void Object_2D::rotate(float theta, float center_x, float center_y)
 {
     for (auto& seg : this->segments)
@@ -145,7 +152,12 @@ void Object_2D::updateCenter()
     center.init(Float3(cx, cy, 0));
 }
 
-
+void Object_2D::project(Camera* cam) {
+    for (auto& segment : this->segments) {
+        if (segment.getP1()) segment.getP1()->project(cam);
+        if (segment.getP2()) segment.getP2()->project(cam);
+    }
+}
 
 Triangle_2D::Triangle_2D(float x1, float y1, float x2, float y2, float x3, float y3)
 {
@@ -163,10 +175,6 @@ Triangle_2D::Triangle_2D(float x1, float y1, float x2, float y2, float x3, float
 
     this->updateCenter();
 }
-
-// ==========================================
-// Implementation OBJECT_3D
-// ==========================================
 
 void Object_3D::add_segment(Segment& segment)
 {
@@ -245,4 +253,11 @@ void Object_3D::updateCenter()
     center.x = mid_x / static_cast<float>(segments.size());
     center.y = mid_y / static_cast<float>(segments.size());
     center.z = mid_z / static_cast<float>(segments.size());
+}
+
+void Object_3D::project(Camera* cam) {
+    for (auto& segment : this->segments) {
+        if (segment.getP1()) segment.getP1()->project(cam);
+        if (segment.getP2()) segment.getP2()->project(cam);
+    }
 }

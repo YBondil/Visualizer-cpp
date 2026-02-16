@@ -9,16 +9,16 @@ class Camera
         float pitch = 0.f ;
         float fov ;
         float screenWidth ;
-        float screenHeight ;
+        float screenHeigth ;
 
     public:
-        Camera(float fov, float screenWidth, float screenHeigth) : 
-            fov(fov), screenHeight(screenHeight), screenWidth(screenWidth) {};
+        Camera(float fov, float screenWidth, float screenHeigth) :
+                fov(fov), screenWidth(screenWidth), screenHeigth(screenHeigth) {};
         ~Camera(){};
 
-        void rotate(int delta_yaw, int delta_pitch);
+        void rotate(float delta_yaw, float delta_pitch);
         void move(OBJ_VISU::Float3 delta_position);
         OBJ_VISU::Float3 get_position() const { return position; }
 
-        SDL_FPoint calculatePositionOnScreen(OBJ_VISU::Point& point) ;
+        void calculatePositionOnScreen(OBJ_VISU::Point& point) ;
     };
