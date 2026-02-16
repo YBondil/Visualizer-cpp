@@ -173,7 +173,7 @@ namespace OBJ_VISU {
         void add_point(Point* p) { vertices.push_back(p); }
         
         virtual void rotate(float theta_x, float theta_y, float theta_z) override;
-        
+        void rotateArround(float theta_x, float theta_y, float theta_z, Float3 point);
         void updateCenter();
         virtual void project(Camera* cam) override;
 

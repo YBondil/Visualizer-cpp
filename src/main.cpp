@@ -11,6 +11,7 @@ SDL_Color BLUE = {0, 0, 255, 255};
 SDL_Color YELLOW = {255, 255, 0, 255};
 SDL_Color CYAN = {0, 255, 255, 255};
 SDL_Color MAGENTA = {255, 0, 255, 255};
+
 int main(int argc, char **argv)
 {
     VISU::Visualizer* visualizer = new VISU::Visualizer();
@@ -85,7 +86,7 @@ int main(int argc, char **argv)
     const int frameDelay = 1000 / FPS;
     Uint32 frameStart;
     int frameTime;
-    int count;
+    int count = 0;
 
     while (visualizer->running())
     {   

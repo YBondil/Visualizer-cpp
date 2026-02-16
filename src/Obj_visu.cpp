@@ -67,16 +67,21 @@ Segment::~Segment()
         delete p2;
     }
 }
-
-Segment::Segment(const Segment& other) : owns_points(true)
+Segment::Segment(const Segment& other)
 {
-    this->p1 = new Point();
-    this->p2 = new Point();
-    *this->p1 = *other.p1;
-    *this->p2 = *other.p2;
     this->color = other.color;
-}
+    this->owns_points = other.owns_points;
 
+    if (this->owns_points) {
+        this->p1 = new Point();
+        this->p2 = new Point();
+        *this->p1 = *other.p1;
+        *this->p2 = *other.p2;
+    } else {
+        this->p1 = other.p1;
+        this->p2 = other.p2;
+    }
+}
 Segment& Segment::operator=(const Segment& other)
 {
     if (this == &other) return *this;
@@ -86,13 +91,18 @@ Segment& Segment::operator=(const Segment& other)
         delete p2;
     }
 
-    owns_points = true;
-    p1 = new Point();
-    p2 = new Point();
-
-    *p1 = *other.p1;
-    *p2 = *other.p2;
     this->color = other.color;
+    this->owns_points = other.owns_points;
+
+    if (this->owns_points) {
+        p1 = new Point();
+        p2 = new Point();
+        *p1 = *other.p1;
+        *p2 = *other.p2;
+    } else {
+        p1 = other.p1;
+        p2 = other.p2;
+    }
     return *this;
 }
 
@@ -222,18 +232,13 @@ void Object_3D::render(SDL_Renderer* ren, bool ShowPoints)
 {
     
     std::sort(faces.begin(), faces.end(), [](const Face& a, const Face& b) {
-        return a.getDepth() < b.getDepth(); 
+        return a.getDepth() > b.getDepth(); 
     });
     for (auto& face : this->faces)
     {
         face.render(ren, ShowPoints);
     }
 
-    
-    for (auto& segment : this->segments)
-    {
-        segment.render(ren, ShowPoints);
-    }
 }
 
 void Object_3D::rotate(float theta_x, float theta_y, float theta_z)
@@ -243,6 +248,15 @@ void Object_3D::rotate(float theta_x, float theta_y, float theta_z)
         p->rotate(theta_x, theta_y, theta_z, this->center);
     }
 }
+void Object_3D::rotateArround(float theta_x, float theta_y, float theta_z, Float3 point)
+{
+    for (auto* p : this->vertices)
+    {
+        p->rotate(theta_x, theta_y, theta_z, point);
+    }
+    this->updateCenter();
+}
+
 void Object_3D::updateCenter()
 {
     float mid_x = 0;

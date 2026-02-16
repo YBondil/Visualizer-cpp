@@ -68,12 +68,20 @@ void Visualizer::update(int count)
 {
 
     for (auto object : objects)
-    {
-        if (object && (count%200)) {
-            object->rotate(0.01f, 0.05f, 0.01f);
-        }
-        else if (object && (count%400)) {
-            object->rotate(0.05f, 0.01f, 0.01f);
+    {   
+        OBJ_VISU::Float3 center = {0.f, 0.f, 0.f};
+
+        if (object) {
+            // TENTATIVE DE CAST : "Est-ce que cet object est un Object_3D ?"
+            // Si oui, obj3d sera un pointeur valide. Si non, il sera nullptr (NULL).
+            OBJ_VISU::Object_3D* obj3d = dynamic_cast<OBJ_VISU::Object_3D*>(object);
+
+            if (obj3d != nullptr) {
+                obj3d->rotateArround(0.01f, 0.01f, 0.01f, center);
+            } 
+            else {
+                object->rotate(0.01f, 0.01f, 0.01f);
+            }
         }
     }
 
