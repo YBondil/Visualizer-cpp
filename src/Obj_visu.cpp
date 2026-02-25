@@ -294,6 +294,10 @@ void Object_3D::add_face(Face face) {
 
 void Face::render(SDL_Renderer* ren,Camera* cam, bool ShowPoints)
 {
+    if (p1->positionOnScreen.x == -1000.f || p2->positionOnScreen.x == -1000.f || p3->positionOnScreen.x == -1000.f) {
+        return;
+    }
+
     SDL_Vertex vertices[3];
 
     vertices[0].position = { p1->positionOnScreen.x, p1->positionOnScreen.y };
@@ -317,9 +321,10 @@ void Face::rotate(float theta_x, float theta_y, float theta_z, Float3 center)
     if(p3) p3->rotate(theta_x, theta_y, theta_z, center);
 }
 float Face::getCameraDistance(Camera* cam) const {
-    float a = cam->get_position().distanceCarre(p1->coords);
-    float b = cam->get_position().distanceCarre(p2->coords);
-    float c = cam->get_position().distanceCarre(p3->coords);
-        
-    return std::min(std::min(a,b), std::min(a,c));
+    Float3 center(
+        (p1->coords.x + p2->coords.x + p3->coords.x) / 3.0f,
+        (p1->coords.y + p2->coords.y + p3->coords.y) / 3.0f,
+        (p1->coords.z + p2->coords.z + p3->coords.z) / 3.0f
+    );
+    return cam->get_position().distanceCarre(center);
 }
