@@ -46,9 +46,7 @@ void Visualizer::init(const char *title, int width, int heigth, bool fullscreen)
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         is_running = true;
         freeze = false;
-        camera = new Camera(90.0f, (float)width, (float)heigth);
-        camera->setNextMovement(OBJ_VISU::Float3(0, 0, -400.0f));
-        camera->move();
+        camera = new Camera(90.0f,OBJ_VISU::Float3(0, 0, -400.0f), (float)width, (float)heigth);
     }
 }
 
@@ -63,9 +61,32 @@ void Visualizer::handleEvent()
             is_running = false;
             break;
         case SDL_EVENT_KEY_DOWN:
-            
-            if (event.key.key == SDLK_B && event.key.repeat == 0) {
-                freeze = !freeze; 
+
+            if (event.key.key == SDLK_B && event.key.repeat == 0)
+            {
+                freeze = !freeze;
+            }
+            if (event.key.key == SDLK_R && event.key.repeat == 0){
+                camera->reset();
+            }
+            break;
+        case SDL_EVENT_MOUSE_BUTTON_DOWN:
+            if (event.button.button == SDL_BUTTON_LEFT)
+            {
+                isDragging = true;
+            }
+            break;
+
+        case SDL_EVENT_MOUSE_BUTTON_UP:
+            if (event.button.button == SDL_BUTTON_LEFT)
+            {
+                isDragging = false;
+            }
+            break;
+        case SDL_EVENT_MOUSE_MOTION:
+            if (isDragging)
+            {             
+                camera->setDeltaPitchAndYaw(-event.motion.yrel, event.motion.xrel);
             }
             break;
         }
@@ -74,18 +95,18 @@ void Visualizer::handleEvent()
     OBJ_VISU::Float3 move(0, 0, 0);
 
     if (state[SDL_SCANCODE_A] || state[SDL_SCANCODE_RIGHT])
-        move.x += 20.0f; // Touche Z (AZERTY)
+        move.x += 20.0f;
     if (state[SDL_SCANCODE_D] || state[SDL_SCANCODE_LEFT])
-        move.x -= 20.0f; // Touche S
+        move.x -= 20.0f;
     if (state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP])
-        move.y += 20.0f; // Touche Q (AZERTY)
+        move.y += 20.0f;
     if (state[SDL_SCANCODE_S] || state[SDL_SCANCODE_DOWN])
-        move.y -= 20.0f; // Touche D
+        move.y -= 20.0f;
     if (state[SDL_SCANCODE_SPACE])
         move.z += 20.0f;
     if (state[SDL_SCANCODE_LSHIFT])
         move.z -= 20.0f;
-    
+
 
     if (move.x != 0 || move.y != 0 || move.z != 0)
     {
@@ -107,11 +128,11 @@ void Visualizer::update(int count)
 
                 if (obj3d != nullptr)
                 {
-                    obj3d->rotateArround(0.01f, 0.01f, 0.01f, center);
+                    //obj3d->rotateArround(0.01f, 0.01f, 0.01f, center);
                 }
                 else
                 {
-                    object->rotate(0.01f, 0.01f, 0.01f);
+                    //object->rotate(0.01f, 0.01f, 0.01f);
                 }
             }
         }
@@ -119,6 +140,7 @@ void Visualizer::update(int count)
         if (camera)
         {
             camera->move();
+            camera->rotate();
 
             for (auto object : objects)
             {

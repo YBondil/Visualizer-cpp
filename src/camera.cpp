@@ -1,9 +1,11 @@
 #include "camera.h"
 #include <cmath>
 #include <iostream>
-void Camera::rotate(float delta_yaw, float delta_pitch){
-    yaw += delta_yaw ;
-    pitch += delta_pitch ;
+void Camera::rotate(){
+    yaw += deltayaw ;
+    pitch += deltapitch ;
+    deltapitch = 0;
+    deltayaw = 0;
 }
 void Camera::move(){
     
