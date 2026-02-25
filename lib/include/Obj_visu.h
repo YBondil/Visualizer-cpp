@@ -17,6 +17,9 @@ namespace OBJ_VISU {
         Float3 operator+(const Float3& other) const {
             return Float3(this->x + other.x, this->y + other.y, this->z + other.z);
         }
+        float distanceCarre( Float3 b){
+            return x*x + b.x*b.x + y*y + b.y*b.y + z*z + b.z*b.z;
+        }
 
     };
 
@@ -25,7 +28,7 @@ namespace OBJ_VISU {
         Object() {}
         virtual ~Object() {} 
 
-        virtual void render(SDL_Renderer* ren, bool ShowPoints) = 0;
+        virtual void render(SDL_Renderer* ren, Camera* cam, bool ShowPoints) = 0;
         virtual void rotate(float theta_x, float theta_y, float theta_z) {}
         virtual void project(Camera* cam) = 0; 
     };
@@ -53,7 +56,7 @@ namespace OBJ_VISU {
             this->color = col;
         }
 
-        virtual void render(SDL_Renderer* ren, bool ShowPoint) override {
+        virtual void render(SDL_Renderer* ren, Camera* cam , bool ShowPoint) override {
             if (!ShowPoint) return; 
             SDL_SetRenderDrawColor(ren, color.r, color.g, color.b, color.a);
             SDL_FRect rect = { positionOnScreen.x - 1, positionOnScreen.y - 1, 2.0f, 2.0f };
@@ -88,7 +91,7 @@ namespace OBJ_VISU {
         Segment(const Segment& other);
         Segment& operator=(const Segment& other);
 
-        virtual void render(SDL_Renderer* ren, bool ShowPoints) override;
+        virtual void render(SDL_Renderer* ren, Camera* cam, bool ShowPoints) override;
         virtual void project(Camera* cam) override;
         
         void set(Float3 pos1, Float3 pos2);
@@ -109,7 +112,7 @@ namespace OBJ_VISU {
         Object_2D() {}
         virtual ~Object_2D() {}
 
-        virtual void render(SDL_Renderer* ren, bool ShowPoints) override;
+        virtual void render(SDL_Renderer* ren, Camera* cam ,bool ShowPoints) override;
         void add_segment(Segment& segment);
         
         void rotate(float theta) ;
@@ -141,9 +144,7 @@ namespace OBJ_VISU {
         
         virtual ~Face() {}
 
-        float getDepth() const {
-            return (p1->getPosition().z + p2->getPosition().z + p3->getPosition().z) / 3.0f;
-        }
+        float getCameraDistance(Camera* cam) const;
 
         virtual void project(Camera* cam) override {
             p1->project(cam);
@@ -151,7 +152,7 @@ namespace OBJ_VISU {
             p3->project(cam);
         }
 
-        virtual void render(SDL_Renderer* ren, bool ShowPoints) override;
+        virtual void render(SDL_Renderer* ren, Camera* camera,bool ShowPoints) override;
         void rotate(float theta_x, float theta_y, float theta_z, Float3 center);
     };
 
@@ -167,7 +168,7 @@ namespace OBJ_VISU {
         Object_3D() {}
         virtual ~Object_3D() {}
 
-        virtual void render(SDL_Renderer* ren, bool ShowPoints) override;
+        virtual void render(SDL_Renderer* ren, Camera* cam, bool ShowPoints) override;
         void add_segment(Segment& segment);
         void add_face(Face face);
         void add_point(Point* p) { vertices.push_back(p); }

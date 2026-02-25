@@ -106,12 +106,12 @@ Segment& Segment::operator=(const Segment& other)
     return *this;
 }
 
-void Segment::render(SDL_Renderer* ren, bool ShowPoints)
+void Segment::render(SDL_Renderer* ren, Camera* cam, bool ShowPoints)
 {
     if (ShowPoints)
     {
-        p1->render(ren,true);
-        p2->render(ren,true);
+        p1->render(ren,nullptr, true);
+        p2->render(ren,nullptr, true);
     }
     SDL_SetRenderDrawColor(ren, color.r, color.g, color.b, color.a);
     SDL_RenderLine(ren, 
@@ -136,11 +136,11 @@ void Object_2D::add_segment(Segment& segment)
     updateCenter(); 
 }
 
-void Object_2D::render(SDL_Renderer* ren, bool ShowPoints)
+void Object_2D::render(SDL_Renderer* ren, Camera* cam, bool ShowPoints)
 {
     for (auto& segment : this->segments)
     {
-        segment.render(ren, ShowPoints);
+        segment.render(ren, nullptr, ShowPoints);
     }
 }
 //void Object_2D::rotate(float theta_x, float theta_y, float theta_z) {
@@ -228,15 +228,15 @@ void Object_3D::add_segment(Segment& segment)
     updateCenter();
 }
 
-void Object_3D::render(SDL_Renderer* ren, bool ShowPoints)
+void Object_3D::render(SDL_Renderer* ren,Camera* camera,bool ShowPoints)
 {
     
-    std::sort(faces.begin(), faces.end(), [](const Face& a, const Face& b) {
-        return a.getDepth() > b.getDepth(); 
+    std::sort(faces.begin(), faces.end(), [camera](const Face& a, const Face& b) {
+        return a.getCameraDistance(camera) > b.getCameraDistance(camera); 
     });
     for (auto& face : this->faces)
     {
-        face.render(ren, ShowPoints);
+        face.render(ren, nullptr, ShowPoints);
     }
 
 }
@@ -292,7 +292,7 @@ void Object_3D::add_face(Face face) {
     this->faces.push_back(face);
 }
 
-void Face::render(SDL_Renderer* ren, bool ShowPoints)
+void Face::render(SDL_Renderer* ren,Camera* cam, bool ShowPoints)
 {
     SDL_Vertex vertices[3];
 
@@ -315,4 +315,11 @@ void Face::rotate(float theta_x, float theta_y, float theta_z, Float3 center)
     if(p1) p1->rotate(theta_x, theta_y, theta_z, center);
     if(p2) p2->rotate(theta_x, theta_y, theta_z, center);
     if(p3) p3->rotate(theta_x, theta_y, theta_z, center);
+}
+float Face::getCameraDistance(Camera* cam) const {
+    float a = cam->get_position().distanceCarre(p1->coords);
+    float b = cam->get_position().distanceCarre(p2->coords);
+    float c = cam->get_position().distanceCarre(p3->coords);
+        
+    return std::min(std::min(a,b), std::min(a,c));
 }

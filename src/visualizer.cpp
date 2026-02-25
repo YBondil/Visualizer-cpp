@@ -61,30 +61,20 @@ void Visualizer::handleEvent()
         case SDL_EVENT_QUIT:
             is_running = false;
             break;
-        case SDL_EVENT_KEY_DOWN:
-            switch (event.key.key)
-            {
-            case SDLK_Z:
-                camera->setNextMovement(OBJ_VISU::Float3(20, 0, 0));
-                break;
-
-            case SDLK_S:
-                camera->setNextMovement(OBJ_VISU::Float3(-20, 0, 0));
-                break;
-            case SDLK_Q:
-                camera->setNextMovement(OBJ_VISU::Float3(0, 20, 0));
-                break;
-            case SDLK_D:
-                camera->setNextMovement(OBJ_VISU::Float3(0, -20, 0));
-                break;
-            case SDLK_SPACE:
-                camera->setNextMovement(OBJ_VISU::Float3(0, 0, 20));
-                break;
-            case SDLK_LSHIFT:
-                camera->setNextMovement(OBJ_VISU::Float3(0, 0, -20));
-                break;
-            }
         }
+    }
+    const bool* state = SDL_GetKeyboardState(NULL);
+    OBJ_VISU::Float3 move(0, 0, 0);
+
+    if (state[SDL_SCANCODE_A]||state[SDL_SCANCODE_RIGHT]) move.x += 20.0f; // Touche Z (AZERTY)
+    if (state[SDL_SCANCODE_D]||state[SDL_SCANCODE_LEFT]) move.x -= 20.0f; // Touche S
+    if (state[SDL_SCANCODE_W]||state[SDL_SCANCODE_UP]) move.y += 20.0f; // Touche Q (AZERTY)
+    if (state[SDL_SCANCODE_S]||state[SDL_SCANCODE_DOWN]) move.y -= 20.0f; // Touche D
+    if (state[SDL_SCANCODE_SPACE]) move.z += 20.0f;
+    if (state[SDL_SCANCODE_LSHIFT]) move.z -= 20.0f;
+    
+    if (move.x != 0 || move.y != 0 || move.z != 0) {
+        camera->setNextMovement(move);
     }
 }
 
@@ -131,7 +121,7 @@ void Visualizer::render(bool ShowPoints = false)
 
     for (auto object : this->objects)
     {
-        object->render(renderer, ShowPoints);
+        object->render(renderer, camera,ShowPoints);
     }
     SDL_RenderPresent(renderer);
 }

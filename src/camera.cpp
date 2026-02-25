@@ -6,9 +6,10 @@ void Camera::rotate(float delta_yaw, float delta_pitch){
     pitch += delta_pitch ;
 }
 void Camera::move(){
+    
     position = position + nextMovement ;
     setNextMovement(OBJ_VISU::Float3(0,0,0));
-    std::cout<<"Moving"<<std::endl;
+    
 }
 void Camera::calculatePositionOnScreen(OBJ_VISU::Point& point){
 
