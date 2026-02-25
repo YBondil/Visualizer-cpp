@@ -45,6 +45,7 @@ void Visualizer::init(const char *title, int width, int heigth, bool fullscreen)
         SDL_SetRenderLogicalPresentation(renderer, width, heigth, SDL_LOGICAL_PRESENTATION_LETTERBOX);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         is_running = true;
+        freeze = false;
         camera = new Camera(90.0f, (float)width, (float)heigth);
         camera->setNextMovement(OBJ_VISU::Float3(0, 0, -400.0f));
         camera->move();
@@ -63,52 +64,66 @@ void Visualizer::handleEvent()
             break;
         }
     }
-    const bool* state = SDL_GetKeyboardState(NULL);
+    const bool *state = SDL_GetKeyboardState(NULL);
     OBJ_VISU::Float3 move(0, 0, 0);
 
-    if (state[SDL_SCANCODE_A]||state[SDL_SCANCODE_RIGHT]) move.x += 20.0f; // Touche Z (AZERTY)
-    if (state[SDL_SCANCODE_D]||state[SDL_SCANCODE_LEFT]) move.x -= 20.0f; // Touche S
-    if (state[SDL_SCANCODE_W]||state[SDL_SCANCODE_UP]) move.y += 20.0f; // Touche Q (AZERTY)
-    if (state[SDL_SCANCODE_S]||state[SDL_SCANCODE_DOWN]) move.y -= 20.0f; // Touche D
-    if (state[SDL_SCANCODE_SPACE]) move.z += 20.0f;
-    if (state[SDL_SCANCODE_LSHIFT]) move.z -= 20.0f;
+    if (state[SDL_SCANCODE_A] || state[SDL_SCANCODE_RIGHT])
+        move.x += 20.0f; // Touche Z (AZERTY)
+    if (state[SDL_SCANCODE_D] || state[SDL_SCANCODE_LEFT])
+        move.x -= 20.0f; // Touche S
+    if (state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP])
+        move.y += 20.0f; // Touche Q (AZERTY)
+    if (state[SDL_SCANCODE_S] || state[SDL_SCANCODE_DOWN])
+        move.y -= 20.0f; // Touche D
+    if (state[SDL_SCANCODE_SPACE])
+        move.z += 20.0f;
+    if (state[SDL_SCANCODE_LSHIFT])
+        move.z -= 20.0f;
+    if (state[SDL_SCANCODE_B]||freeze)
+        freeze = false;
+    if (state[SDL_SCANCODE_B]||!freeze)
+        freeze = true;
     
-    if (move.x != 0 || move.y != 0 || move.z != 0) {
+
+    if (move.x != 0 || move.y != 0 || move.z != 0)
+    {
         camera->setNextMovement(move);
     }
 }
 
 void Visualizer::update(int count)
 {
-
-    for (auto object : objects)
+    if (!freeze)
     {
-        OBJ_VISU::Float3 center = {100.f, 100.f, 100.f};
-
-        if (object)
-        {
-            OBJ_VISU::Object_3D *obj3d = dynamic_cast<OBJ_VISU::Object_3D *>(object);
-
-            if (obj3d != nullptr)
-            {
-                obj3d->rotateArround(0.01f, 0.01f, 0.01f, center);
-            }
-            else
-            {
-                object->rotate(0.01f, 0.01f, 0.01f);
-            }
-        }
-    }
-
-    if (camera)
-    {
-        camera->move();
-
         for (auto object : objects)
         {
+            OBJ_VISU::Float3 center = {100.f, 100.f, 100.f};
+
             if (object)
             {
-                object->project(camera);
+                OBJ_VISU::Object_3D *obj3d = dynamic_cast<OBJ_VISU::Object_3D *>(object);
+
+                if (obj3d != nullptr)
+                {
+                    obj3d->rotateArround(0.01f, 0.01f, 0.01f, center);
+                }
+                else
+                {
+                    object->rotate(0.01f, 0.01f, 0.01f);
+                }
+            }
+        }
+
+        if (camera)
+        {
+            camera->move();
+
+            for (auto object : objects)
+            {
+                if (object)
+                {
+                    object->project(camera);
+                }
             }
         }
     }
@@ -121,7 +136,7 @@ void Visualizer::render(bool ShowPoints = false)
 
     for (auto object : this->objects)
     {
-        object->render(renderer, camera,ShowPoints);
+        object->render(renderer, camera, ShowPoints);
     }
     SDL_RenderPresent(renderer);
 }

@@ -23,6 +23,7 @@ namespace VISU
 
     private:
         bool is_running;
+        bool freeze ;
         Camera* camera;
         SDL_Window *window;
         SDL_Renderer *renderer;
