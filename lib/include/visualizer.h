@@ -24,6 +24,7 @@ namespace VISU
     private:
         bool is_running;
         bool freeze ;
+        bool isDragging ;
         Camera* camera;
         SDL_Window *window;
         SDL_Renderer *renderer;
