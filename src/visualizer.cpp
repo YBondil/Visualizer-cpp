@@ -62,6 +62,12 @@ void Visualizer::handleEvent()
         case SDL_EVENT_QUIT:
             is_running = false;
             break;
+        case SDL_EVENT_KEY_DOWN:
+            
+            if (event.key.key == SDLK_B && event.key.repeat == 0) {
+                freeze = !freeze; 
+            }
+            break;
         }
     }
     const bool *state = SDL_GetKeyboardState(NULL);
@@ -79,10 +85,6 @@ void Visualizer::handleEvent()
         move.z += 20.0f;
     if (state[SDL_SCANCODE_LSHIFT])
         move.z -= 20.0f;
-    if (state[SDL_SCANCODE_B]||freeze)
-        freeze = false;
-    if (state[SDL_SCANCODE_B]||!freeze)
-        freeze = true;
     
 
     if (move.x != 0 || move.y != 0 || move.z != 0)
