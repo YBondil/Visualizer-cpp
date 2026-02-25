@@ -1,12 +1,14 @@
 #include "camera.h"
 #include <cmath>
-
+#include <iostream>
 void Camera::rotate(float delta_yaw, float delta_pitch){
     yaw += delta_yaw ;
     pitch += delta_pitch ;
 }
-void Camera::move(OBJ_VISU::Float3 delta_position){
-    position = position + delta_position ;
+void Camera::move(){
+    position = position + nextMovement ;
+    setNextMovement(OBJ_VISU::Float3(0,0,0));
+    std::cout<<"Moving"<<std::endl;
 }
 void Camera::calculatePositionOnScreen(OBJ_VISU::Point& point){
 

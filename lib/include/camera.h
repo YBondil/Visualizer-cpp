@@ -4,7 +4,8 @@
 class Camera
     {
     private:
-        OBJ_VISU::Float3 position ;
+    OBJ_VISU::Float3 position ;
+    OBJ_VISU::Float3 nextMovement ;
         float yaw = 0.f ;
         float pitch = 0.f ;
         float fov ;
@@ -17,8 +18,9 @@ class Camera
         ~Camera(){};
 
         void rotate(float delta_yaw, float delta_pitch);
-        void move(OBJ_VISU::Float3 delta_position);
+        void move();
         OBJ_VISU::Float3 get_position() const { return position; }
 
         void calculatePositionOnScreen(OBJ_VISU::Point& point) ;
+        void setNextMovement(OBJ_VISU::Float3 move){nextMovement = move;};
     };

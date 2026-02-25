@@ -46,7 +46,8 @@ void Visualizer::init(const char *title, int width, int heigth, bool fullscreen)
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         is_running = true;
         camera = new Camera(90.0f, (float)width, (float)heigth);
-        camera->move(OBJ_VISU::Float3(0, 0, -400.0f));
+        camera->setNextMovement(OBJ_VISU::Float3(0, 0, -400.0f));
+        camera->move();
     }
 }
 
@@ -60,6 +61,20 @@ void Visualizer::handleEvent()
         case SDL_EVENT_QUIT:
             is_running = false;
             break;
+        
+        case SDLK_Z:
+            camera->setNextMovement(OBJ_VISU::Float3(20,0,0));       
+        
+        case SDLK_S :
+            camera->setNextMovement(OBJ_VISU::Float3(-20,0,0));       
+        case SDLK_Q :
+            camera->setNextMovement(OBJ_VISU::Float3(0,20,0));       
+        case SDLK_D :
+            camera->setNextMovement(OBJ_VISU::Float3(0,-20,0));       
+        case SDLK_SPACE :
+            camera->setNextMovement(OBJ_VISU::Float3(0,0,20));       
+        case SDLK_LSHIFT :
+            camera->setNextMovement(OBJ_VISU::Float3(0,0,-20));       
         }
     }
 }
@@ -69,23 +84,25 @@ void Visualizer::update(int count)
 
     for (auto object : objects)
     {   
-        OBJ_VISU::Float3 center = {0.f, 0.f, 0.f};
-
+        OBJ_VISU::Float3 center = {100.f, 100.f, 100.f};
+        
         if (object) {
-            // TENTATIVE DE CAST : "Est-ce que cet object est un Object_3D ?"
-            // Si oui, obj3d sera un pointeur valide. Si non, il sera nullptr (NULL).
             OBJ_VISU::Object_3D* obj3d = dynamic_cast<OBJ_VISU::Object_3D*>(object);
 
             if (obj3d != nullptr) {
                 obj3d->rotateArround(0.01f, 0.01f, 0.01f, center);
+                
             } 
             else {
                 object->rotate(0.01f, 0.01f, 0.01f);
             }
         }
+        
     }
 
     if (camera) {
+        camera->move();
+        
         for (auto object : objects)
         {
             if (object) {

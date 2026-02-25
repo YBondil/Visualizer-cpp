@@ -248,15 +248,15 @@ void Object_3D::rotate(float theta_x, float theta_y, float theta_z)
         p->rotate(theta_x, theta_y, theta_z, this->center);
     }
 }
-void Object_3D::rotateArround(float theta_x, float theta_y, float theta_z, Float3 point)
+void Object_3D::rotateArround(float theta_x, float theta_y, float theta_z, Float3 center)
 {
     for (auto* p : this->vertices)
     {
-        p->rotate(theta_x, theta_y, theta_z, point);
+        
+        p->rotate(theta_x, theta_y, theta_z, center);
     }
-    this->updateCenter();
+    updateCenter();
 }
-
 void Object_3D::updateCenter()
 {
     float mid_x = 0;
