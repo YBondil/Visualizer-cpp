@@ -4,7 +4,7 @@
 using namespace VISU;
 
 Visualizer::Visualizer() : window(nullptr), renderer(nullptr), camera(nullptr), is_running(false) {}
-Visualizer::~Visualizer() {delete camera;}
+Visualizer::~Visualizer() { delete camera; }
 
 void Visualizer::init(const char *title, int width, int heigth, bool fullscreen)
 {
@@ -61,20 +61,29 @@ void Visualizer::handleEvent()
         case SDL_EVENT_QUIT:
             is_running = false;
             break;
-        
-        case SDLK_Z:
-            camera->setNextMovement(OBJ_VISU::Float3(20,0,0));       
-        
-        case SDLK_S :
-            camera->setNextMovement(OBJ_VISU::Float3(-20,0,0));       
-        case SDLK_Q :
-            camera->setNextMovement(OBJ_VISU::Float3(0,20,0));       
-        case SDLK_D :
-            camera->setNextMovement(OBJ_VISU::Float3(0,-20,0));       
-        case SDLK_SPACE :
-            camera->setNextMovement(OBJ_VISU::Float3(0,0,20));       
-        case SDLK_LSHIFT :
-            camera->setNextMovement(OBJ_VISU::Float3(0,0,-20));       
+        case SDL_EVENT_KEY_DOWN:
+            switch (event.key.key)
+            {
+            case SDLK_Z:
+                camera->setNextMovement(OBJ_VISU::Float3(20, 0, 0));
+                break;
+
+            case SDLK_S:
+                camera->setNextMovement(OBJ_VISU::Float3(-20, 0, 0));
+                break;
+            case SDLK_Q:
+                camera->setNextMovement(OBJ_VISU::Float3(0, 20, 0));
+                break;
+            case SDLK_D:
+                camera->setNextMovement(OBJ_VISU::Float3(0, -20, 0));
+                break;
+            case SDLK_SPACE:
+                camera->setNextMovement(OBJ_VISU::Float3(0, 0, 20));
+                break;
+            case SDLK_LSHIFT:
+                camera->setNextMovement(OBJ_VISU::Float3(0, 0, -20));
+                break;
+            }
         }
     }
 }
@@ -83,29 +92,32 @@ void Visualizer::update(int count)
 {
 
     for (auto object : objects)
-    {   
+    {
         OBJ_VISU::Float3 center = {100.f, 100.f, 100.f};
-        
-        if (object) {
-            OBJ_VISU::Object_3D* obj3d = dynamic_cast<OBJ_VISU::Object_3D*>(object);
 
-            if (obj3d != nullptr) {
+        if (object)
+        {
+            OBJ_VISU::Object_3D *obj3d = dynamic_cast<OBJ_VISU::Object_3D *>(object);
+
+            if (obj3d != nullptr)
+            {
                 obj3d->rotateArround(0.01f, 0.01f, 0.01f, center);
-                
-            } 
-            else {
+            }
+            else
+            {
                 object->rotate(0.01f, 0.01f, 0.01f);
             }
         }
-        
     }
 
-    if (camera) {
+    if (camera)
+    {
         camera->move();
-        
+
         for (auto object : objects)
         {
-            if (object) {
+            if (object)
+            {
                 object->project(camera);
             }
         }
@@ -131,7 +143,7 @@ void Visualizer::clean()
     SDL_Quit();
 }
 
-void Visualizer::add_object(OBJ_VISU::Object* object)
+void Visualizer::add_object(OBJ_VISU::Object *object)
 {
     objects.push_back(object);
 }
