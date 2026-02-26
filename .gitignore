@@ -2,6 +2,7 @@
 build/
 bin/
 lib/SDL/build/
+model/
 
 # Ignorer les fichiers de configuration CMake générés
 CMakeCache.txt
