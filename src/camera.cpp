@@ -17,7 +17,7 @@ void Camera::rotate()
 void Camera::move()
 {
 
-    position = position + nextMovement;
+    orbitTarget = orbitTarget + nextMovement;
     setNextMovement(OBJ_VISU::Float3());
 }
 void Camera::calculatePositionOnScreen(OBJ_VISU::Point &point)
@@ -67,6 +67,8 @@ void Camera::reset()
     pitch = 0;
     deltapitch = 0;
     deltayaw = 0;
+    orbitTarget = OBJ_VISU::Float3();
+    orbitDistance = 400.f;
 }
 
 void Camera::updateOrbitPosition()

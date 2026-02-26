@@ -60,7 +60,20 @@ void Visualizer::handleEvent()
         case SDL_EVENT_QUIT:
             is_running = false;
             break;
+        case SDL_EVENT_KEY_DOWN:
+            if (event.key.repeat == 0)
+            {
+                if (event.key.key == SDLK_R)
 
+                {
+                    camera->reset();
+                }
+                else if (event.key.key == SDLK_B)
+                {
+                    freeze = !freeze;
+                }
+            }
+            break;
         case SDL_EVENT_MOUSE_BUTTON_DOWN:
             if (event.button.button == SDL_BUTTON_LEFT)
             {
