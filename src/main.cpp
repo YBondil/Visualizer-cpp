@@ -92,7 +92,7 @@ int main(int argc, char **argv)
     for(auto* p : floor_vertices) {
         sol.add_point(p); 
     }
-    visualizer->add_object(&sol);
+    //visualizer->add_object(&sol);
 
 
     // --- BOUCLE PRINCIPALE ---

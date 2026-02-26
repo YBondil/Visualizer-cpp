@@ -46,7 +46,7 @@ void Visualizer::init(const char *title, int width, int heigth, bool fullscreen)
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         is_running = true;
         freeze = false;
-        camera = new Camera(90.0f,OBJ_VISU::Float3(0, 0, -400.0f), (float)width, (float)heigth);
+        camera = new Camera(90.0f, OBJ_VISU::Float3(0, 0, -400.0f), (float)width, (float)heigth);
     }
 }
 
@@ -62,55 +62,63 @@ void Visualizer::handleEvent()
             break;
 
         case SDL_EVENT_MOUSE_BUTTON_DOWN:
-            if (event.button.button == SDL_BUTTON_LEFT) {
-                isOrbiting = true; 
-            } else if (event.button.button == SDL_BUTTON_MIDDLE) {
-                isPanning = true; 
-            }
-            if (event.button.button == SDL_BUTTON_LEFT) {
-                if (SDL_GetModState() & SDL_KMOD_LSHIFT) {
-                    isPanning = true;  
-                } else {
-                    isOrbiting = true; 
+            if (event.button.button == SDL_BUTTON_LEFT)
+            {
+
+                if (SDL_GetModState() & SDL_KMOD_SHIFT)
+                {
+                    isPanning = true;
                 }
+                else
+                {
+                    isOrbiting = true;
+                }
+            }
+            else if (event.button.button == SDL_BUTTON_MIDDLE)
+            {
+                isPanning = true;
             }
             break;
 
         case SDL_EVENT_MOUSE_BUTTON_UP:
-            if (event.button.button == SDL_BUTTON_LEFT) {
+            if (event.button.button == SDL_BUTTON_LEFT)
+            {
                 isOrbiting = false;
-            } else if (event.button.button == SDL_BUTTON_MIDDLE) {
+                isPanning = false;
+            }
+            else if (event.button.button == SDL_BUTTON_MIDDLE)
+            {
                 isPanning = false;
             }
             break;
 
         case SDL_EVENT_MOUSE_MOTION:
-            if (isOrbiting) {
-                camera->setDeltaPitchAndYaw(event.motion.xrel, event.motion.yrel);
-            } 
-            else if (isPanning) {
-                camera->pan((float)event.motion.xrel, (float)event.motion.yrel);
+            if (isOrbiting)
+            {
+                camera->setDeltaPitchAndYaw(-event.motion.yrel, event.motion.xrel);
+            }
+            else if (isPanning)
+            {
+                camera->pan((float)event.motion.yrel, (float)event.motion.xrel);
             }
             break;
 
         case SDL_EVENT_MOUSE_WHEEL:
         {
             float scroll = event.wheel.y;
-            if (scroll != 0) {
+            if (scroll != 0)
+            {
                 float currentDist = camera->getOrbitDistance();
-                
-                // Note : Le trackpad du Mac a un défilement très fluide (inertiel). 
-                // On réduit un peu le multiplicateur (ex: 5.0f au lieu de 20.0f) pour éviter de zoomer trop violemment.
-                float newDist = currentDist - (scroll * 5.0f); 
-                
-                if (newDist < 1.0f) newDist = 1.0f;
+                float newDist = currentDist - (scroll * 5.0f);
+
+                if (newDist < 1.0f)
+                    newDist = 1.0f;
                 camera->setOrbitDistance(newDist);
             }
             break;
         }
-
-        } 
-    } 
+        }
+    }
     const bool *state = SDL_GetKeyboardState(NULL);
     OBJ_VISU::Float3 move(0, 0, 0);
 
@@ -126,7 +134,6 @@ void Visualizer::handleEvent()
         move.z += 20.0f;
     if (state[SDL_SCANCODE_RSHIFT])
         move.z -= 20.0f;
-
 
     if (move.x != 0 || move.y != 0 || move.z != 0)
     {
@@ -148,11 +155,11 @@ void Visualizer::update(int count)
 
                 if (obj3d != nullptr)
                 {
-                    //obj3d->rotateArround(0.01f, 0.01f, 0.01f, center);
+                    // obj3d->rotateArround(0.01f, 0.01f, 0.01f, center);
                 }
                 else
                 {
-                    //object->rotate(0.01f, 0.01f, 0.01f);
+                    // object->rotate(0.01f, 0.01f, 0.01f);
                 }
             }
         }
@@ -161,6 +168,7 @@ void Visualizer::update(int count)
         {
             camera->move();
             camera->rotate();
+            camera->updateOrbitPosition();
 
             for (auto object : objects)
             {

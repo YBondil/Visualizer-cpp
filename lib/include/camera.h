@@ -22,7 +22,8 @@ private:
 
 public:
     Camera(float fov, OBJ_VISU::Float3 initialPosition, float screenWidth, float screenHeigth)
-        : fov(fov), initialPosition(initialPosition), position(initialPosition), screenWidth(screenWidth), screenHeigth(screenHeigth)
+        : fov(fov), initialPosition(initialPosition), position(initialPosition), 
+        screenWidth(screenWidth), screenHeigth(screenHeigth), orbitDistance(400.f), orbitTarget(OBJ_VISU::Float3())
     {
         pitch = 0.f;
         yaw = 0.f;

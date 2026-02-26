@@ -7,6 +7,12 @@ void Camera::rotate()
     pitch += deltapitch;
     deltapitch = 0;
     deltayaw = 0;
+
+    float limit = 89.0f * (M_PI / 180.0f);
+    if (pitch > limit)
+        pitch = limit;
+    if (pitch < -limit)
+        pitch = -limit;
 }
 void Camera::move()
 {
@@ -90,5 +96,5 @@ void Camera::pan(float delta_x, float delta_y)
 
     float pan_speed = 0.05;
 
-    orbitTarget = orbitTarget + right * (-delta_x * pan_speed) + up * (delta_y * pan_speed);
+    orbitTarget = orbitTarget + right * (-delta_y * pan_speed) + up * (delta_x * pan_speed);
 }
