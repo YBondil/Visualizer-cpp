@@ -25,6 +25,8 @@ namespace VISU
         bool is_running;
         bool freeze ;
         bool isDragging ;
+        bool isOrbiting ;
+        bool isPanning ;
         Camera* camera;
         SDL_Window *window;
         SDL_Renderer *renderer;

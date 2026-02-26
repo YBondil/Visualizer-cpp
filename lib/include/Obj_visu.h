@@ -14,17 +14,13 @@ namespace OBJ_VISU
         Float3() : x(0), y(0), z(0) {}
         Float3(float a, float b, float c) : x(a), y(b), z(c) {}
 
-        Float3 operator+(const Float3 &other) const
-        {
-            return Float3(this->x + other.x, this->y + other.y, this->z + other.z);
-        }
-        float distanceCarre(const Float3 &b) const
-        {
-            float dx = this->x - b.x;
-            float dy = this->y - b.y;
-            float dz = this->z - b.z;
-            return dx * dx + dy * dy + dz * dz;
-        }
+        Float3 operator+(const Float3 &other) const;
+        Float3 operator-(const Float3 &other) const;
+        Float3 operator*(float lambda) const;
+        float distanceCarre(const Float3 &b) const;
+        Float3 crossProduct(const Float3 &other) const;
+        float dotProduct(const Float3 &other) const;
+        void normalize();
     };
 
     class Object

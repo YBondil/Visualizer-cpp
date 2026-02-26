@@ -60,37 +60,57 @@ void Visualizer::handleEvent()
         case SDL_EVENT_QUIT:
             is_running = false;
             break;
-        case SDL_EVENT_KEY_DOWN:
 
-            if (event.key.key == SDLK_B && event.key.repeat == 0)
-            {
-                freeze = !freeze;
-            }
-            if (event.key.key == SDLK_R && event.key.repeat == 0){
-                camera->reset();
-            }
-            break;
         case SDL_EVENT_MOUSE_BUTTON_DOWN:
-            if (event.button.button == SDL_BUTTON_LEFT)
-            {
-                isDragging = true;
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                isOrbiting = true; 
+            } else if (event.button.button == SDL_BUTTON_MIDDLE) {
+                isPanning = true; 
+            }
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                if (SDL_GetModState() & SDL_KMOD_LSHIFT) {
+                    isPanning = true;  
+                } else {
+                    isOrbiting = true; 
+                }
             }
             break;
 
         case SDL_EVENT_MOUSE_BUTTON_UP:
-            if (event.button.button == SDL_BUTTON_LEFT)
-            {
-                isDragging = false;
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                isOrbiting = false;
+            } else if (event.button.button == SDL_BUTTON_MIDDLE) {
+                isPanning = false;
             }
             break;
+
         case SDL_EVENT_MOUSE_MOTION:
-            if (isDragging)
-            {             
-                camera->setDeltaPitchAndYaw(-event.motion.yrel, event.motion.xrel);
+            if (isOrbiting) {
+                camera->setDeltaPitchAndYaw(event.motion.xrel, event.motion.yrel);
+            } 
+            else if (isPanning) {
+                camera->pan((float)event.motion.xrel, (float)event.motion.yrel);
+            }
+            break;
+
+        case SDL_EVENT_MOUSE_WHEEL:
+        {
+            float scroll = event.wheel.y;
+            if (scroll != 0) {
+                float currentDist = camera->getOrbitDistance();
+                
+                // Note : Le trackpad du Mac a un défilement très fluide (inertiel). 
+                // On réduit un peu le multiplicateur (ex: 5.0f au lieu de 20.0f) pour éviter de zoomer trop violemment.
+                float newDist = currentDist - (scroll * 5.0f); 
+                
+                if (newDist < 1.0f) newDist = 1.0f;
+                camera->setOrbitDistance(newDist);
             }
             break;
         }
-    }
+
+        } 
+    } 
     const bool *state = SDL_GetKeyboardState(NULL);
     OBJ_VISU::Float3 move(0, 0, 0);
 
@@ -104,7 +124,7 @@ void Visualizer::handleEvent()
         move.y -= 20.0f;
     if (state[SDL_SCANCODE_SPACE])
         move.z += 20.0f;
-    if (state[SDL_SCANCODE_LSHIFT])
+    if (state[SDL_SCANCODE_RSHIFT])
         move.z -= 20.0f;
 
 

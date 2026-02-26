@@ -7,8 +7,52 @@
 
 using namespace OBJ_VISU;
 
-void Point::project(Camera* cam) {
-    if (cam) {
+Float3 Float3::operator+(const Float3 &other) const
+{
+    return Float3(this->x + other.x, this->y + other.y, this->z + other.z);
+}
+Float3 Float3::operator-(const Float3 &other) const
+{
+    return Float3(this->x - other.x, this->y - other.y, this->z - other.z);
+}
+Float3 Float3::operator*(float lambda) const
+{
+    return Float3(this->x * lambda, this->y * lambda, this->z * lambda);
+}
+float Float3::distanceCarre(const Float3 &b) const
+{
+    float dx = this->x - b.x;
+    float dy = this->y - b.y;
+    float dz = this->z - b.z;
+    return dx * dx + dy * dy + dz * dz;
+}
+float Float3::dotProduct(const Float3 &other) const
+{
+    return this->x * other.x + this->y * other.y + this->z * other.z;
+}
+Float3 Float3::crossProduct(const Float3 &other) const
+{
+    float x = this->y * other.z - this->z * other.y;
+    float y = this->z * other.x - this->x * other.z;
+    float z = this->x * other.y - this->y * other.x;
+    return Float3(x, y, z);
+}
+
+void Float3::normalize()
+{
+    float norm = sqrt(x * x + y * y + z * z);
+    if (norm != 0.f)
+    {
+        this->x = x / norm;
+        this->y = y / norm;
+        this->z = z / norm;
+    }
+}
+
+void Point::project(Camera *cam)
+{
+    if (cam)
+    {
         cam->calculatePositionOnScreen(*this);
     }
 }
@@ -22,19 +66,22 @@ void Point::rotate(float theta_x, float theta_y, float theta_z, Float3 center)
     float y = coords.y - cy;
     float z = coords.z - cz;
 
-    if (theta_z != 0) {
+    if (theta_z != 0)
+    {
         float old_x = x;
         x = x * cos(theta_z) - y * sin(theta_z);
         y = old_x * sin(theta_z) + y * cos(theta_z);
     }
 
-    if (theta_y != 0) {
+    if (theta_y != 0)
+    {
         float old_x = x;
         x = x * cos(theta_y) + z * sin(theta_y);
         z = -old_x * sin(theta_y) + z * cos(theta_y);
     }
 
-    if (theta_x != 0) {
+    if (theta_x != 0)
+    {
         float old_y = y;
         y = y * cos(theta_x) - z * sin(theta_x);
         z = old_y * sin(theta_x) + z * cos(theta_x);
@@ -50,43 +97,49 @@ Segment::Segment(Float3 pos1, Float3 pos2, SDL_Color col) : owns_points(true)
     p1->init(pos1, col);
     p2->init(pos2, col);
 
-    p1->setPositionOnScreen(0, 0); 
+    p1->setPositionOnScreen(0, 0);
     p2->setPositionOnScreen(0, 0);
     this->color = col;
 }
 
-Segment::Segment(Point* ptr1, Point* ptr2, SDL_Color col) 
+Segment::Segment(Point *ptr1, Point *ptr2, SDL_Color col)
     : p1(ptr1), p2(ptr2), color(col), owns_points(false)
 {
 }
 
 Segment::~Segment()
 {
-    if (owns_points) {
+    if (owns_points)
+    {
         delete p1;
         delete p2;
     }
 }
-Segment::Segment(const Segment& other)
+Segment::Segment(const Segment &other)
 {
     this->color = other.color;
     this->owns_points = other.owns_points;
 
-    if (this->owns_points) {
+    if (this->owns_points)
+    {
         this->p1 = new Point();
         this->p2 = new Point();
         *this->p1 = *other.p1;
         *this->p2 = *other.p2;
-    } else {
+    }
+    else
+    {
         this->p1 = other.p1;
         this->p2 = other.p2;
     }
 }
-Segment& Segment::operator=(const Segment& other)
+Segment &Segment::operator=(const Segment &other)
 {
-    if (this == &other) return *this;
+    if (this == &other)
+        return *this;
 
-    if (owns_points) {
+    if (owns_points)
+    {
         delete p1;
         delete p2;
     }
@@ -94,30 +147,32 @@ Segment& Segment::operator=(const Segment& other)
     this->color = other.color;
     this->owns_points = other.owns_points;
 
-    if (this->owns_points) {
+    if (this->owns_points)
+    {
         p1 = new Point();
         p2 = new Point();
         *p1 = *other.p1;
         *p2 = *other.p2;
-    } else {
+    }
+    else
+    {
         p1 = other.p1;
         p2 = other.p2;
     }
     return *this;
 }
 
-void Segment::render(SDL_Renderer* ren, Camera* cam, bool ShowPoints)
+void Segment::render(SDL_Renderer *ren, Camera *cam, bool ShowPoints)
 {
     if (ShowPoints)
     {
-        p1->render(ren,nullptr, true);
-        p2->render(ren,nullptr, true);
+        p1->render(ren, nullptr, true);
+        p2->render(ren, nullptr, true);
     }
     SDL_SetRenderDrawColor(ren, color.r, color.g, color.b, color.a);
-    SDL_RenderLine(ren, 
-        p1->positionOnScreen.x, p1->positionOnScreen.y, 
-        p2->positionOnScreen.x, p2->positionOnScreen.y
-    );
+    SDL_RenderLine(ren,
+                   p1->positionOnScreen.x, p1->positionOnScreen.y,
+                   p2->positionOnScreen.x, p2->positionOnScreen.y);
 }
 
 void Segment::set(Float3 pos1, Float3 pos2)
@@ -125,30 +180,32 @@ void Segment::set(Float3 pos1, Float3 pos2)
     this->p1->init(pos1);
     this->p2->init(pos2);
 }
-void Segment::project(Camera* cam)
+void Segment::project(Camera *cam)
 {
-    if (p1) p1->project(cam);
-    if (p2) p2->project(cam);
+    if (p1)
+        p1->project(cam);
+    if (p2)
+        p2->project(cam);
 }
-void Object_2D::add_segment(Segment& segment)
+void Object_2D::add_segment(Segment &segment)
 {
     this->segments.push_back(segment);
-    updateCenter(); 
+    updateCenter();
 }
 
-void Object_2D::render(SDL_Renderer* ren, Camera* cam, bool ShowPoints)
+void Object_2D::render(SDL_Renderer *ren, Camera *cam, bool ShowPoints)
 {
-    for (auto& segment : this->segments)
+    for (auto &segment : this->segments)
     {
         segment.render(ren, nullptr, ShowPoints);
     }
 }
-//void Object_2D::rotate(float theta_x, float theta_y, float theta_z) {
-//        this->rotate(theta_z);
-//    }
+// void Object_2D::rotate(float theta_x, float theta_y, float theta_z) {
+//         this->rotate(theta_z);
+//     }
 void Object_2D::rotate(float theta, float center_x, float center_y)
 {
-    for (auto& seg : this->segments)
+    for (auto &seg : this->segments)
     {
 
         float x1 = seg.getP1()->coords.x - center_x;
@@ -182,24 +239,29 @@ void Object_2D::updateCenter()
     float mid_x = 0;
     float mid_y = 0;
 
-    if (segments.empty()) return;
+    if (segments.empty())
+        return;
 
-    for (auto& segment : segments)
+    for (auto &segment : segments)
     {
         mid_x += (segment.getP1()->coords.x + segment.getP2()->coords.x) / 2;
         mid_y += (segment.getP1()->coords.y + segment.getP2()->coords.y) / 2;
     }
-    
+
     float cx = mid_x / static_cast<float>(segments.size());
     float cy = mid_y / static_cast<float>(segments.size());
-    
+
     center.init(Float3(cx, cy, 0));
 }
 
-void Object_2D::project(Camera* cam) {
-    for (auto& segment : this->segments) {
-        if (segment.getP1()) segment.getP1()->project(cam);
-        if (segment.getP2()) segment.getP2()->project(cam);
+void Object_2D::project(Camera *cam)
+{
+    for (auto &segment : this->segments)
+    {
+        if (segment.getP1())
+            segment.getP1()->project(cam);
+        if (segment.getP2())
+            segment.getP2()->project(cam);
     }
 }
 
@@ -211,7 +273,7 @@ Triangle_2D::Triangle_2D(float x1, float y1, float x2, float y2, float x3, float
 
     Segment s1(p1_coords, p2_coords);
     Segment s2(p2_coords, p3_coords);
-    Segment s3(p3_coords, p1_coords); 
+    Segment s3(p3_coords, p1_coords);
 
     this->add_segment(s1);
     this->add_segment(s2);
@@ -220,39 +282,35 @@ Triangle_2D::Triangle_2D(float x1, float y1, float x2, float y2, float x3, float
     this->updateCenter();
 }
 
-
-
-void Object_3D::add_segment(Segment& segment)
+void Object_3D::add_segment(Segment &segment)
 {
     this->segments.push_back(segment);
     updateCenter();
 }
 
-void Object_3D::render(SDL_Renderer* ren,Camera* camera,bool ShowPoints)
+void Object_3D::render(SDL_Renderer *ren, Camera *camera, bool ShowPoints)
 {
-    
-    std::sort(faces.begin(), faces.end(), [camera](const Face& a, const Face& b) {
-        return a.getCameraDistance(camera) > b.getCameraDistance(camera); 
-    });
-    for (auto& face : this->faces)
+
+    std::sort(faces.begin(), faces.end(), [camera](const Face &a, const Face &b)
+              { return a.getCameraDistance(camera) > b.getCameraDistance(camera); });
+    for (auto &face : this->faces)
     {
         face.render(ren, nullptr, ShowPoints);
     }
-
 }
 
 void Object_3D::rotate(float theta_x, float theta_y, float theta_z)
 {
-    for (auto* p : this->vertices)
+    for (auto *p : this->vertices)
     {
         p->rotate(theta_x, theta_y, theta_z, this->center);
     }
 }
 void Object_3D::rotateArround(float theta_x, float theta_y, float theta_z, Float3 center)
 {
-    for (auto* p : this->vertices)
+    for (auto *p : this->vertices)
     {
-        
+
         p->rotate(theta_x, theta_y, theta_z, center);
     }
     updateCenter();
@@ -263,9 +321,10 @@ void Object_3D::updateCenter()
     float mid_y = 0;
     float mid_z = 0;
 
-    if (segments.empty()) return;
+    if (segments.empty())
+        return;
 
-    for (auto& segment : segments)
+    for (auto &segment : segments)
     {
         mid_x += (segment.getP1()->getPosition().x + segment.getP2()->getPosition().x) / 2;
         mid_y += (segment.getP1()->getPosition().y + segment.getP2()->getPosition().y) / 2;
@@ -277,54 +336,63 @@ void Object_3D::updateCenter()
     center.z = mid_z / static_cast<float>(segments.size());
 }
 
-
-void Object_3D::project(Camera* cam) {
-    for (auto& face : this->faces) {
+void Object_3D::project(Camera *cam)
+{
+    for (auto &face : this->faces)
+    {
         face.project(cam);
     }
-    for (auto& segment : this->segments) {
-        if (segment.getP1()) segment.getP1()->project(cam);
-        if (segment.getP2()) segment.getP2()->project(cam);
+    for (auto &segment : this->segments)
+    {
+        if (segment.getP1())
+            segment.getP1()->project(cam);
+        if (segment.getP2())
+            segment.getP2()->project(cam);
     }
 }
 
-void Object_3D::add_face(Face face) {
+void Object_3D::add_face(Face face)
+{
     this->faces.push_back(face);
 }
 
-void Face::render(SDL_Renderer* ren,Camera* cam, bool ShowPoints)
+void Face::render(SDL_Renderer *ren, Camera *cam, bool ShowPoints)
 {
-    if (p1->positionOnScreen.x == -1000.f || p2->positionOnScreen.x == -1000.f || p3->positionOnScreen.x == -1000.f) {
+    if (p1->positionOnScreen.x == -1000.f || p2->positionOnScreen.x == -1000.f || p3->positionOnScreen.x == -1000.f)
+    {
         return;
     }
 
     SDL_Vertex vertices[3];
 
-    vertices[0].position = { p1->positionOnScreen.x, p1->positionOnScreen.y };
-    vertices[0].color = { (float)color.r/255.0f, (float)color.g/255.0f, (float)color.b/255.0f, (float)color.a/255.0f };
-    vertices[0].tex_coord = { 0.0f, 0.0f };
+    vertices[0].position = {p1->positionOnScreen.x, p1->positionOnScreen.y};
+    vertices[0].color = {(float)color.r / 255.0f, (float)color.g / 255.0f, (float)color.b / 255.0f, (float)color.a / 255.0f};
+    vertices[0].tex_coord = {0.0f, 0.0f};
 
-    vertices[1].position = { p2->positionOnScreen.x, p2->positionOnScreen.y };
-    vertices[1].color = { (float)color.r/255.0f, (float)color.g/255.0f, (float)color.b/255.0f, (float)color.a/255.0f };
-    vertices[1].tex_coord = { 0.0f, 0.0f };
+    vertices[1].position = {p2->positionOnScreen.x, p2->positionOnScreen.y};
+    vertices[1].color = {(float)color.r / 255.0f, (float)color.g / 255.0f, (float)color.b / 255.0f, (float)color.a / 255.0f};
+    vertices[1].tex_coord = {0.0f, 0.0f};
 
-    vertices[2].position = { p3->positionOnScreen.x, p3->positionOnScreen.y };
-    vertices[2].color = { (float)color.r/255.0f, (float)color.g/255.0f, (float)color.b/255.0f, (float)color.a/255.0f };
-    vertices[2].tex_coord = { 0.0f, 0.0f };
+    vertices[2].position = {p3->positionOnScreen.x, p3->positionOnScreen.y};
+    vertices[2].color = {(float)color.r / 255.0f, (float)color.g / 255.0f, (float)color.b / 255.0f, (float)color.a / 255.0f};
+    vertices[2].tex_coord = {0.0f, 0.0f};
 
     SDL_RenderGeometry(ren, nullptr, vertices, 3, nullptr, 0);
 }
 void Face::rotate(float theta_x, float theta_y, float theta_z, Float3 center)
 {
-    if(p1) p1->rotate(theta_x, theta_y, theta_z, center);
-    if(p2) p2->rotate(theta_x, theta_y, theta_z, center);
-    if(p3) p3->rotate(theta_x, theta_y, theta_z, center);
+    if (p1)
+        p1->rotate(theta_x, theta_y, theta_z, center);
+    if (p2)
+        p2->rotate(theta_x, theta_y, theta_z, center);
+    if (p3)
+        p3->rotate(theta_x, theta_y, theta_z, center);
 }
-float Face::getCameraDistance(Camera* cam) const {
+float Face::getCameraDistance(Camera *cam) const
+{
     Float3 center(
         (p1->coords.x + p2->coords.x + p3->coords.x) / 3.0f,
         (p1->coords.y + p2->coords.y + p3->coords.y) / 3.0f,
-        (p1->coords.z + p2->coords.z + p3->coords.z) / 3.0f
-    );
+        (p1->coords.z + p2->coords.z + p3->coords.z) / 3.0f);
     return cam->get_position().distanceCarre(center);
 }
