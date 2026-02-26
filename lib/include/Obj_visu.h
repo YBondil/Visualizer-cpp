@@ -182,5 +182,7 @@ namespace OBJ_VISU
         void rotateArround(float theta_x, float theta_y, float theta_z, Float3 point);
         void updateCenter();
         virtual void project(Camera *cam) override;
+        
     };
+    Object_3D* create_subdivided_floor(float size, float y_pos, int subdivisions, SDL_Color color);
 }

@@ -23,10 +23,14 @@ int main(int argc, char **argv)
     SDL_Color modelColor = { 200, 200, 200, 255 }; // Gris clair
     
     // Remplacez "mon_modele.stl" par le chemin vers votre vrai fichier .stl
-    OBJ_VISU::Object_3D* stl_model = VISU::load_stl("cude.stl", modelColor); 
+    OBJ_VISU::Object_3D* stl_model = VISU::load_stl("model/teapot.stl", modelColor); 
+    OBJ_VISU::Object_3D* sol = OBJ_VISU::create_subdivided_floor(800.0f, 200.0f, 100, GRAY);
     
     if (stl_model != nullptr) {
         visualizer->add_object(stl_model);
+    }
+    if (sol != nullptr){
+        visualizer->add_object(sol);
     }
 
 

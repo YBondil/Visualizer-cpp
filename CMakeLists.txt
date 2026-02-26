@@ -3,9 +3,14 @@ project(visualizer)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
+set(SOURCES 
+    src/main.cpp 
+    src/visualizer.cpp 
+    src/camera.cpp 
+    src/Obj_visu.cpp
+    src/read_file.cpp
+)
 
-# 1. Automatically find all .cpp files in the src directory
-file(GLOB SOURCES "src/*.cpp")
 
 # 2. Automatically find all .hpp and .h files in the lib/include directory
 file(GLOB HEADERS "lib/include/*.h")

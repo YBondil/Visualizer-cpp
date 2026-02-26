@@ -46,7 +46,7 @@ void Visualizer::init(const char *title, int width, int heigth, bool fullscreen)
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         is_running = true;
         freeze = false;
-        camera = new Camera(90.0f, OBJ_VISU::Float3(0, 0, -400.0f), (float)width, (float)heigth);
+        camera = new Camera(90.0f, OBJ_VISU::Float3(50.f, 0.f, 0.f), (float)width, (float)heigth);
     }
 }
 
@@ -136,17 +136,17 @@ void Visualizer::handleEvent()
     OBJ_VISU::Float3 move(0, 0, 0);
 
     if (state[SDL_SCANCODE_A] || state[SDL_SCANCODE_RIGHT])
-        move.x += 20.0f;
+        move.x += 2.0f;
     if (state[SDL_SCANCODE_D] || state[SDL_SCANCODE_LEFT])
-        move.x -= 20.0f;
+        move.x -= 2.0f;
     if (state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP])
-        move.y += 20.0f;
+        move.y += 2.0f;
     if (state[SDL_SCANCODE_S] || state[SDL_SCANCODE_DOWN])
-        move.y -= 20.0f;
+        move.y -= 2.0f;
     if (state[SDL_SCANCODE_SPACE])
-        move.z += 20.0f;
+        move.z += 2.0f;
     if (state[SDL_SCANCODE_RSHIFT])
-        move.z -= 20.0f;
+        move.z -= 2.0f;
 
     if (move.x != 0 || move.y != 0 || move.z != 0)
     {

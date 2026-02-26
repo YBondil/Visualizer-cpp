@@ -396,3 +396,47 @@ float Face::getCameraDistance(Camera *cam) const
         (p1->coords.z + p2->coords.z + p3->coords.z) / 3.0f);
     return cam->get_position().distanceCarre(center);
 }
+
+// Fonction pour générer un sol quadrillé optimisé
+OBJ_VISU::Object_3D*  OBJ_VISU::create_subdivided_floor(float size, float y_pos, int subdivisions, SDL_Color color) {
+    OBJ_VISU::Object_3D* floor = new OBJ_VISU::Object_3D();
+    std::vector<OBJ_VISU::Point*> points;
+
+    // Calcul de la taille de chaque petit carré
+    float step = (size * 2.0f) / subdivisions;
+    float start_x = -size;
+    float start_z = -size;
+
+    // 1. Génération de tous les points de la grille
+    for (int i = 0; i <= subdivisions; ++i) {
+        for (int j = 0; j <= subdivisions; ++j) {
+            float x = start_x + i * step;
+            float z = start_z + j * step;
+            OBJ_VISU::Point* p = new OBJ_VISU::Point(OBJ_VISU::Float3(x, y_pos, z));
+            floor->add_point(p);
+            points.push_back(p);
+        }
+    }
+
+    // 2. Création des faces (2 triangles pour chaque case de la grille)
+    for (int i = 0; i < subdivisions; ++i) {
+        for (int j = 0; j < subdivisions; ++j) {
+            // Index des 4 coins de la case courante
+            int p00 = i * (subdivisions + 1) + j;
+            int p01 = i * (subdivisions + 1) + (j + 1);
+            int p10 = (i + 1) * (subdivisions + 1) + j;
+            int p11 = (i + 1) * (subdivisions + 1) + (j + 1);
+
+            // Triangle 1 : Haut-Gauche, Bas-Gauche, Haut-Droite
+            floor->add_face(OBJ_VISU::Face(points[p00], points[p10], points[p01], color));
+            // Triangle 2 : Haut-Droite, Bas-Gauche, Bas-Droite
+            floor->add_face(OBJ_VISU::Face(points[p01], points[p10], points[p11], color));
+            
+            // OPTIONNEL : Dessiner aussi les lignes du quadrillage
+            // floor->add_segment(*(new OBJ_VISU::Segment(points[p00], points[p01])));
+            // floor->add_segment(*(new OBJ_VISU::Segment(points[p00], points[p10])));
+        }
+    }
+
+    return floor;
+}
