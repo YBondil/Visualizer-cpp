@@ -16,22 +16,26 @@ SDL_Color GRAY = {128, 128, 128, 255}; // Couleur pour le sol
 
 int main(int argc, char **argv)
 {
+    bool fullscreen = false;
+    if (argv[1] == "--fullscreen"){
+        fullscreen = true;
+    }
     VISU::Visualizer* visualizer = new VISU::Visualizer();
-    visualizer->init("Moteur 3D - Chargement STL", SCREEN_WIDTH, SCREEN_HEIGHT, false);
+    visualizer->init("Moteur 3D - Chargement STL", SCREEN_WIDTH, SCREEN_HEIGHT, fullscreen);
 
     // --- CHARGEMENT DU FICHIER STL ---
     SDL_Color modelColor = { 200, 200, 200, 255 }; // Gris clair
     
     // Remplacez "mon_modele.stl" par le chemin vers votre vrai fichier .stl
     OBJ_VISU::Object_3D* stl_model = VISU::load_stl("model/teapot.stl", modelColor); 
-    OBJ_VISU::Object_3D* sol = OBJ_VISU::create_subdivided_floor(800.0f, 200.0f, 100, GRAY);
+    //OBJ_VISU::Object_3D* sol = OBJ_VISU::create_subdivided_floor(800.0f, 200.0f, 100, GRAY);
     
     if (stl_model != nullptr) {
         visualizer->add_object(stl_model);
     }
-    if (sol != nullptr){
-        visualizer->add_object(sol);
-    }
+    // if (sol != nullptr){
+    //     visualizer->add_object(sol);
+    // }
 
 
     // --- BOUCLE PRINCIPALE ---
